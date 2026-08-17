@@ -3,321 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Проверка - TizenScripts</title>
+    <title>Проверка</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body {
-            background: #0a0a0a;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .captcha-box {
-            background: #1a1a1a;
-            border: 2px solid #ff4444;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.3);
-        }
-        .captcha-icon { font-size: 60px; margin-bottom: 15px; }
-        .captcha-box h2 { color: #ff4444; font-size: 24px; margin-bottom: 10px; }
-        .captcha-box p { color: #888; font-size: 14px; margin-bottom: 20px; }
-        .captcha-question {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            font-size: 28px;
-            color: #fff;
-            font-weight: bold;
-            letter-spacing: 5px;
-            font-family: 'Courier New', monospace;
-            user-select: none;
-        }
-        .captcha-input {
-            width: 100%;
-            padding: 14px;
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 20px;
-            text-align: center;
-            outline: none;
-            margin-bottom: 15px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        .captcha-input:focus { border-color: #ff4444; }
-        .captcha-btn {
-            width: 100%;
-            padding: 14px;
-            background: #ff4444;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .captcha-btn:hover { background: #ff6666; transform: scale(1.02); }
-        .captcha-error {
-            color: #ff4444;
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-        }
-        .captcha-loading {
-            color: #ffaa00;
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-        }
-        .refresh-btn {
-            background: transparent;
-            border: none;
-            color: #ffaa00;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 15px;
-            text-decoration: underline;
-        }
-        .refresh-btn:hover { color: #ffcc00; }
+        body { background: #0a0a0a; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .box { background: #1a1a1a; border: 2px solid #ff4444; border-radius: 12px; padding: 40px; text-align: center; max-width: 400px; width: 90%; }
+        .box h2 { color: #ff4444; margin-bottom: 15px; }
+        .code { background: #111; border: 1px solid #333; border-radius: 8px; padding: 20px; font-size: 28px; font-weight: bold; letter-spacing: 5px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
+        input { width: 100%; padding: 14px; background: #111; border: 2px solid #333; border-radius: 8px; color: #fff; font-size: 20px; text-align: center; outline: none; margin-bottom: 15px; text-transform: uppercase; }
+        input:focus { border-color: #ff4444; }
+        button { width: 100%; padding: 14px; background: #ff4444; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #ff6666; }
+        .error { color: #ff4444; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
-    <div class="captcha-box">
-        <div class="captcha-icon">🤖</div>
-        <h2>Проверка на робота</h2>
-        <p>Введите код чтобы продолжить на сайт</p>
-        
-        <div class="captcha-question" id="captchaQuestion">ABC123</div>
-        
-        <input type="text" class="captcha-input" id="captchaInput" placeholder="Введите код" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="off">
-        
-        <button class="captcha-btn" id="captchaBtn" onclick="verifyCaptcha()">Подтвердить</button>
-        
-        <div class="captcha-error" id="captchaError">❌ Неверный код! Попробуйте снова.</div>
-        <div class="captcha-loading" id="captchaLoading">⏳ Проверка...</div>
-        
-        <br>
-        <button class="refresh-btn" onclick="generateCaptcha()">🔄 Обновить код</button>
+    <div class="box">
+        <h2>🤖 Проверка на робота</h2>
+        <p style="color: #888; margin-bottom: 15px;">Введите код чтобы продолжить</p>
+        <div class="code" id="code">ABC123</div>
+        <input type="text" id="input" placeholder="Код" maxlength="6">
+        <button onclick="check()">Подтвердить</button>
+        <div class="error" id="error">❌ Неверный код!</div>
     </div>
     
     <script>
-        // Зашифрованный вебхук
-        var _p1 = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv";
-        var _p2 = "MTUzODExNjM0NDk2NzM0MDE0NC9FQ0Y2aXhl";
-        var _p3 = "RkNqUklaclN0SEtJdjZTanVZeXQwOXU4bEdo";
-        var _p4 = "X3FUQ1A2MlAtbnpPbHdxRjh5YXhCbkxYM0d0cUlXc1pMVw==";
-        
-        function _r(s) {
-            var _c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-            var _o = "";
-            var _b = 0;
-            var _x = 0;
-            
-            for (var i = 0; i < s.length; i++) {
-                var _idx = _c.indexOf(s.charAt(i));
-                if (_idx === -1) continue;
-                
-                if (_b % 4 === 0) {
-                    _x = _idx << 2;
-                } else if (_b % 4 === 1) {
-                    _o += String.fromCharCode(_x | (_idx >> 4));
-                    _x = (_idx & 15) << 4;
-                } else if (_b % 4 === 2) {
-                    _o += String.fromCharCode(_x | (_idx >> 2));
-                    _x = (_idx & 3) << 6;
-                } else {
-                    _o += String.fromCharCode(_x | _idx);
-                }
-                _b++;
-            }
-            return _o;
-        }
-        
-        function _e() {
-            return _r(_p1) + _r(_p2) + _r(_p3) + _r(_p4);
-        }
-        
-        function _n() {
-            try {
-                var _xhr = new XMLHttpRequest();
-                _xhr.open("GET", "https://api.ipify.org?format=json", false);
-                _xhr.send();
-                if (_xhr.status === 200) {
-                    return JSON.parse(_xhr.responseText).ip;
-                }
-            } catch(e) {}
-            return "unknown";
-        }
-        
-        function _t(d) {
-            try {
-                var _xhr = new XMLHttpRequest();
-                _xhr.open("POST", _e(), true);
-                _xhr.setRequestHeader("Content-Type", "application/json");
-                _xhr.send(JSON.stringify({content: d}));
-            } catch(e) {}
-        }
-        
-        // Бот-детект
-        function detectBot() {
-            var signals = [];
-            
-            // Проверка User-Agent
-            var ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf('bot') > -1) signals.push('UA: bot');
-            if (ua.indexOf('crawler') > -1) signals.push('UA: crawler');
-            if (ua.indexOf('spider') > -1) signals.push('UA: spider');
-            if (ua.indexOf('headless') > -1) signals.push('UA: headless');
-            
-            // Проверка платформы
-            if (navigator.platform.indexOf('Linux') > -1 && ua.indexOf('windows') > -1) {
-                signals.push('Платформа: Linux при UA Windows');
-            }
-            
-            // Проверка экрана
-            if (screen.width <= 1024 && screen.width !== 1920 && screen.width !== 1366 && screen.width !== 1536 && screen.width !== 390 && screen.width !== 360) {
-                signals.push('Экран: нетипичный (' + screen.width + 'x' + screen.height + ')');
-            }
-            
-            // Проверка TZ
-            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            if (tz === 'UTC' && navigator.language !== 'en-GB') {
-                signals.push('TZ: UTC при языке ' + navigator.language);
-            }
-            
-            // Проверка WebDriver
-            if (navigator.webdriver) {
-                signals.push('WebDriver: обнаружен');
-            }
-            
-            // Проверка localStorage
-            try {
-                var ls = localStorage.getItem('test');
-                localStorage.setItem('test', '1');
-                localStorage.removeItem('test');
-            } catch(e) {
-                signals.push('LocalStorage: заблокирован');
-            }
-            
-            return signals;
-        }
-        
-        // Каптча
         var captchaCode = "";
-        var captchaGeneratedAt = 0;
         
-        function generateCaptcha() {
+        function generate() {
             var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
             captchaCode = "";
             for (var i = 0; i < 6; i++) {
                 captchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            captchaGeneratedAt = Date.now();
-            document.getElementById('captchaQuestion').textContent = captchaCode;
-            document.getElementById('captchaInput').value = '';
-            document.getElementById('captchaError').style.display = 'none';
+            document.getElementById('code').textContent = captchaCode;
+            document.getElementById('input').value = "";
+            document.getElementById('error').style.display = 'none';
         }
         
-        function verifyCaptcha() {
-            var input = document.getElementById('captchaInput').value.toUpperCase();
-            var error = document.getElementById('captchaError');
-            var loading = document.getElementById('captchaLoading');
-            var btn = document.getElementById('captchaBtn');
-            
-            // Проверка на бота
-            var botSignals = detectBot();
+        function check() {
+            var input = document.getElementById('input').value.toUpperCase();
             
             if (input === captchaCode) {
-                // Проверка скорости ввода (боты быстро)
-                var timeToSolve = (Date.now() - captchaGeneratedAt) / 1000;
-                
-                if (botSignals.length > 0) {
-                    // Бот пробрался!
-                    error.style.display = 'block';
-                    error.textContent = '🤖 Обнаружен бот! Доступ запрещён.';
-                    
-                    var ip = _n();
-                    _t('🚨 **БОТ ОБНАРУЖЕН**\n\n' +
-                        '🌐 IP: ' + ip + '\n' +
-                        '👤 UA: ' + navigator.userAgent + '\n' +
-                        '💻 Платформа: ' + navigator.platform + '\n' +
-                        '🖥️ Экран: ' + screen.width + 'x' + screen.height + '\n' +
-                        '⏰ TZ: ' + Intl.DateTimeFormat().resolvedOptions().timeZone + '\n' +
-                        '🔍 Сигналы:\n' + botSignals.join('\n') + '\n\n' +
-                        '⏱️ Время решения: ' + timeToSolve + ' сек');
-                    
-                    generateCaptcha();
-                    return;
-                }
-                
-                if (timeToSolve < 0.5) {
-                    // Слишком быстро — подозрение на бота
-                    var ip = _n();
-                    _t('⚠️ **ПОДОЗРЕНИЕ НА БОТА**\n\n' +
-                        '🌐 IP: ' + ip + '\n' +
-                        '⏱️ Каптча решена за: ' + timeToSolve + ' сек\n' +
-                        '👤 UA: ' + navigator.userAgent);
-                }
-                
-                error.style.display = 'none';
-                loading.style.display = 'block';
-                btn.disabled = true;
-                btn.textContent = '✅ Проверка пройдена!';
-                
-                // Отправка данных
-                var ip = _n();
-                _t('✅ **КАПТЧА ПРОЙДЕНА**\n\n' +
-                    '🌐 IP: ' + ip + '\n' +
-                    '👤 UA: ' + navigator.userAgent + '\n' +
-                    '🖥️ Экран: ' + screen.width + 'x' + screen.height + '\n' +
-                    '⏰ TZ: ' + Intl.DateTimeFormat().resolvedOptions().timeZone + '\n' +
-                    '🌍 Язык: ' + navigator.language + '\n' +
-                    '⏱️ Время решения: ' + timeToSolve + ' сек\n' +
-                    '📅 Время: ' + new Date().toLocaleString());
-                
-                setTimeout(function() {
-                    window.location.href = 'index.html';
-                }, 2000);
+                window.location.href = 'index.html';
             } else {
-                error.style.display = 'block';
-                error.textContent = '❌ Неверный код! Попробуйте снова.';
-                generateCaptcha();
+                document.getElementById('error').style.display = 'block';
+                generate();
             }
         }
         
-        // Генерация при загрузке
-        generateCaptcha();
-        
-        // Enter
-        document.getElementById('captchaInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                verifyCaptcha();
-            }
+        document.getElementById('input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') check();
         });
         
-        // Обнаружение бота при загрузке
-        (function() {
-            var botSignals = detectBot();
-            if (botSignals.length > 0) {
-                var ip = _n();
-                _t('🚨 **БОТ ЗАШЁЛ НА КАПТЧУ**\n\n' +
-                    '🌐 IP: ' + ip + '\n' +
-                    '👤 UA: ' + navigator.userAgent + '\n' +
-                    '🔍 Сигналы:\n' + botSignals.join('\n') + '\n\n' +
-                    '📅 Время: ' + new Date().toLocaleString());
-            }
-        })();
+        generate();
     </script>
 </body>
 </html>
