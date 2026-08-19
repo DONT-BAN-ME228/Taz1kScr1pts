@@ -20,4 +20,6 @@ There will be various cheats, exploits, and scripts here.
 Использование сторонних ПО запрещённые правилами игры/платформы ведёт к блокировке аккаунта или чего хуже 
 
 (eng)
+
 Using third-party software prohibited by the rules of the game/platform will lead to account blocking or worse.
+▯▯▯▯▯▯▯▯▯▯▯▯▯
